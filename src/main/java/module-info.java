@@ -6,6 +6,7 @@ module antonchuvashov.familybudget {
     requires com.dlsc.formsfx;
     requires net.synedra.validatorfx;
     requires org.kordamp.ikonli.javafx;
+    requires java.sql;
 
     opens antonchuvashov.familybudget to javafx.fxml;
     exports antonchuvashov.familybudget;
