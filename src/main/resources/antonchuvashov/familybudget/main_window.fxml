@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="antonchuvashov.familybudget.MainController">
+    <Label text="Welcome to the Family Budget App!" layoutX="80" layoutY="50" style="-fx-font-size: 20;"/>
+    <Button text="View Budget" layoutX="50" layoutY="100" onAction="#handleViewBudget"/>
+    <Button text="Exit" layoutX="50" layoutY="150" onAction="#handleExit"/>
+</AnchorPane>

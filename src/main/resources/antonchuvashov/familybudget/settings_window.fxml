@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="antonchuvashov.familybudget.SettingsController">
+    <Label text="Подключение" layoutX="100" layoutY="20" style="-fx-font-size: 18;"/>
+
+    <Label text="База данных URL:" layoutX="50" layoutY="60"/>
+    <TextField fx:id="dbUrlField" promptText="localhost:5432/postgres" layoutX="50"
+               layoutY="80" prefWidth="200"/>
+
+    <Label text="Логин:" layoutX="50" layoutY="120"/>
+    <TextField fx:id="dbUsernameField" promptText="user" layoutX="50" layoutY="140" prefWidth="200"/>
+
+    <Label text="Пароль:" layoutX="50" layoutY="180"/>
+    <PasswordField fx:id="dbPasswordField" promptText="password" layoutX="50" layoutY="200"
+                   prefWidth="200"/>
+
+    <Button text="Сохранить" layoutX="50" layoutY="240" onAction="#handleSaveSettings"/>
+    <Button text="Отмена" layoutX="150" layoutY="240" onAction="#handleCancel"/>
+</AnchorPane>

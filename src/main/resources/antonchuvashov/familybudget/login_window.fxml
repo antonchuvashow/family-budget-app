@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.* ?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="antonchuvashov.familybudget.LoginController">
+    <Label text="Вход" layoutX="120" layoutY="50" style="-fx-font-size: 20;"/>
+    <TextField fx:id="usernameField" promptText="Логин" layoutX="50" layoutY="100" prefWidth="200"/>
+    <PasswordField fx:id="passwordField" promptText="Пароль" layoutX="50" layoutY="150" prefWidth="200"/>
+    <Button text="Войти" layoutX="50" layoutY="200" prefWidth="200" onAction="#handleLoginAction"/>
+    <Label fx:id="errorLabel" text="" layoutX="50" layoutY="250" textFill="red"/>
+
+    <!-- Кнопка настроек с иконкой шестеренки -->
+    <Button layoutX="240" layoutY="300" style="-fx-background-radius: 50%; -fx-background-color: transparent;"
+            onAction="#openSettingsWindow">
+        <graphic>
+            <FontIcon iconLiteral="unil-setting" iconSize="20"/>
+        </graphic>
+    </Button>
+</AnchorPane>

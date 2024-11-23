@@ -8,17 +8,47 @@ public class DBConnection {
     private static String url;
     private static String user;
     private static String password;
+    private static Connection connection;
 
     private DBConnection() {
     }
 
-    private static void setConnection(String url, String user, String password) {
-        DBConnection.url = url;
-        DBConnection.user = user;
-        DBConnection.password = password;
+
+    public static void setConnection(String url, String username, String password) {
+        try {
+            DBConnection.url = url;
+            DBConnection.user = username;
+            DBConnection.password = password;
+            connection = DriverManager.getConnection("jdbc:postgresql://" + url, username, password);
+
+        } catch (SQLException e) {
+            connection = null;
+            e.printStackTrace();
+        }
+    }
+
+    public static String getDbUrl() {
+        return url;
+    }
+
+    public static String getDbUsername() {
+        return user;
+    }
+
+    public static String getDbPassword() {
+        return password;
+    }
+
+    public static boolean isValidConnection() {
+        try {
+            return connection != null && !connection.isClosed();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, user, password);
+        return connection;
     }
 }

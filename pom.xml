@@ -53,6 +53,11 @@
       <artifactId>ikonli-javafx</artifactId>
       <version>12.3.1</version>
     </dependency>
+    <dependency>
+      <groupId>org.kordamp.ikonli</groupId>
+      <artifactId>ikonli-unicons-pack</artifactId>
+      <version>12.3.1</version>
+    </dependency>
 <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -64,7 +69,12 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
-    </dependency>  </dependencies>
+    </dependency> <dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <version>42.7.3</version>
+  </dependency>
+  </dependencies>
 
   <build>
     <plugins>

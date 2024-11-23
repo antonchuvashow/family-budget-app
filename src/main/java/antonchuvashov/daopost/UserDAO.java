@@ -20,6 +20,27 @@ public class UserDAO {
         }
     }
 
+    public static User getUser(String username) throws SQLException {
+        String query = "SELECT * FROM users WHERE username = ?";
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return new User(
+                        resultSet.getString("username"),
+                        resultSet.getString("password"),
+                        resultSet.getString("full_name"),
+                        resultSet.getDate("birth_date"),
+                        resultSet.getBigDecimal("sum")
+                );
+            } else {
+                return null;
+            }
+        }
+    }
+
     public static ArrayList<User> getAllUsers() throws SQLException {
         ArrayList<User> users = new ArrayList<>();
         String query = "SELECT * FROM users";
