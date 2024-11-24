@@ -12,7 +12,7 @@ public class LoginApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        DBConnection.setConnection("localhost:5432/postgres", "user", "password");
+        DBConnection.fromSettings();
         FXMLLoader fxmlLoader = new FXMLLoader(LoginApp.class.getResource("login_window.fxml"));
         stage.setTitle("Вход");
         stage.setScene(new Scene(fxmlLoader.load(), 300, 350));

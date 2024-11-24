@@ -6,6 +6,10 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.*;
+import java.util.Objects;
+import java.util.Properties;
+
 public class SettingsController {
 
     @FXML
@@ -24,7 +28,7 @@ public class SettingsController {
     }
 
     @FXML
-    private void handleSaveSettings() {
+    private void handleSaveSettings() throws IOException {
         String url = dbUrlField.getText();
         String username = dbUsernameField.getText();
         String password = dbPasswordField.getText();
@@ -33,7 +37,21 @@ public class SettingsController {
             return;
         }
 
-        DBConnection.setConnection(url, username, password);
+        Properties properties = new Properties();
+        try (InputStream inputStream = DBConnection.class.getClassLoader().getResourceAsStream("settings")) {
+            properties.load(inputStream);
+
+            properties.setProperty("db.url", url);
+            properties.setProperty("db.user", username);
+            properties.setProperty("db.password", password);
+
+            try (PrintWriter writer = new PrintWriter(
+                            Objects.requireNonNull(DBConnection.class.getClassLoader().getResource("settings")).getPath())) {
+                properties.store(writer, null);
+            }
+
+            DBConnection.setConnection(url, username, password);
+        }
 
         Stage settingsStage = (Stage) dbUrlField.getScene().getWindow();
         settingsStage.close();

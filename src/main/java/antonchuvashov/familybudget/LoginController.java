@@ -50,10 +50,10 @@ public class LoginController {
                     Parent root = loader.load();
                     Stage stage = new Stage();
                     stage.setScene(new Scene(root, 400, 400));
-                    stage.setMinWidth(400);
-                    stage.setMaxWidth(400);
+                    stage.setMinWidth(800);
+//                    stage.setMaxWidth(400);
                     stage.setMinHeight(400);
-                    stage.setMaxHeight(400);
+//                    stage.setMaxHeight(400);
 
                     stage.setTitle("Семейный бюджет");
                     stage.show();

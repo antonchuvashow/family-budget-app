@@ -1,8 +1,12 @@
 package antonchuvashov.daopost;
 
 import antonchuvashov.model.Expense;
+import antonchuvashov.model.Income;
+import antonchuvashov.model.TransactionRecord;
 
+import java.math.BigDecimal;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,74 +17,50 @@ public class ExpenseDAO {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setInt(1, expense.getExpenseId());
-            preparedStatement.setString(2, expense.getUserId());
+            preparedStatement.setString(2, expense.getUser());
             preparedStatement.setBigDecimal(3, expense.getAmount());
-            preparedStatement.setDate(4, new java.sql.Date(expense.getOperationDate().getTime()));
+            preparedStatement.setDate(4, new java.sql.Date(expense.getDate().getTime()));
             preparedStatement.setInt(5, expense.getEntryId());
             preparedStatement.executeUpdate();
         }
     }
 
-    public static Expense getExpenseById(int expenseId) throws SQLException {
-        String query = "SELECT * FROM EXPENSE WHERE expense_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setInt(1, expenseId);
-            ResultSet resultSet = preparedStatement.executeQuery();
+    public static List<TransactionRecord> fetchExpenses(LocalDate startDate, LocalDate endDate, String entryFilter, String personFilter) {
+        List<TransactionRecord> expenses = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection()) {
+            String query = "SELECT ex.expense_id, ex.amount, e.name AS entry,  e.entry_id, ex.operation_date, u.full_name " +
+                    "FROM expense ex " +
+                    "JOIN entry e ON ex.entry_id = e.entry_id " +
+                    "JOIN users u ON ex.user_id = u.username " +
+                    "WHERE ex.operation_date BETWEEN ? AND ? " +
+                    (entryFilter != null ? "AND e.name = ? " : "") +
+                    (personFilter != null ? "AND u.full_name = ? " : "");
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setDate(1, java.sql.Date.valueOf(startDate));
+            stmt.setDate(2, java.sql.Date.valueOf(endDate));
+            int paramIndex = 3;
 
-            if (resultSet.next()) {
-                return new Expense(
-                        resultSet.getInt("expense_id"),
-                        resultSet.getString("user_id"),
-                        resultSet.getBigDecimal("amount"),
-                        resultSet.getDate("operation_date"),
-                        resultSet.getInt("entry_id")
-                );
+            if (entryFilter != null) {
+                stmt.setString(paramIndex++, entryFilter);
             }
-        }
-        return null;
-    }
+            if (personFilter != null) {
+                stmt.setString(paramIndex, personFilter);
+            }
 
-    public static List<Expense> getAllExpenses() throws SQLException {
-        String query = "SELECT * FROM EXPENSE";
-        List<Expense> expenses = new ArrayList<>();
-
-        try (Connection conn = DBConnection.getConnection();
-             Statement statement = conn.createStatement();
-             ResultSet resultSet = statement.executeQuery(query)) {
-
-            while (resultSet.next()) {
+            ResultSet result = stmt.executeQuery();
+            while (result.next()) {
                 expenses.add(new Expense(
-                        resultSet.getInt("expense_id"),
-                        resultSet.getString("user_id"),
-                        resultSet.getBigDecimal("amount"),
-                        resultSet.getDate("operation_date"),
-                        resultSet.getInt("entry_id")
+                        result.getInt("expense_id"),
+                        result.getString("full_name"),
+                        result.getBigDecimal("amount"),
+                        result.getDate("operation_date"),
+                        result.getInt("entry_id"),
+                        result.getString("entry")
                 ));
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return expenses;
-    }
-
-    public static void updateExpense(Expense expense) throws SQLException {
-        String query = "UPDATE EXPENSE SET user_id = ?, amount = ?, operation_date = ?, entry_id = ? WHERE expense_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setString(1, expense.getUserId());
-            preparedStatement.setBigDecimal(2, expense.getAmount());
-            preparedStatement.setDate(3, new java.sql.Date(expense.getOperationDate().getTime()));
-            preparedStatement.setInt(4, expense.getEntryId());
-            preparedStatement.setInt(5, expense.getExpenseId());
-            preparedStatement.executeUpdate();
-        }
-    }
-
-    public static void deleteExpense(int expenseId) throws SQLException {
-        String query = "DELETE FROM EXPENSE WHERE expense_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setInt(1, expenseId);
-            preparedStatement.executeUpdate();
-        }
     }
 }

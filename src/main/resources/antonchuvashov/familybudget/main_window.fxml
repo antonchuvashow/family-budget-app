@@ -3,8 +3,58 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="antonchuvashov.familybudget.MainController">
-    <Label text="Welcome to the Family Budget App!" layoutX="80" layoutY="50" style="-fx-font-size: 20;"/>
-    <Button text="View Budget" layoutX="50" layoutY="100" onAction="#handleViewBudget"/>
-    <Button text="Exit" layoutX="50" layoutY="150" onAction="#handleExit"/>
-</AnchorPane>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="antonchuvashov.familybudget.MainController">
+    <!-- Верхнее меню -->
+    <top>
+        <MenuBar>
+            <Menu text="Файл">
+                <MenuItem onAction="#handleExit" text="Выход" />
+            </Menu>
+            <Menu text="Действия">
+                <MenuItem onAction="#handleAddIncome" text="Добавить доход" />
+                <MenuItem onAction="#handleAddExpense" text="Добавить расход" />
+                <MenuItem onAction="#handleViewStatistics" text="Посмотреть статистику" />
+            </Menu>
+        </MenuBar>
+    </top>
+
+    <!-- Центр окна -->
+    <center>
+        <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 20;">
+
+            <!-- Верхняя часть: настройки периода и фильтры -->
+            <HBox alignment="CENTER" spacing="20">
+                <Label text="Период:" />
+                <DatePicker fx:id="startDatePicker" promptText="Начало" />
+                <DatePicker fx:id="endDatePicker" promptText="Конец" />
+                <Button onAction="#handleRefresh" text="Обновить" />
+            </HBox>
+
+            <!-- Фильтры: категория и статья -->
+            <HBox alignment="CENTER" spacing="20">
+                <Label text="Категория:" />
+                <ComboBox fx:id="categoryComboBox" promptText="Выберите категорию"/>
+
+                <Label text="Статья:" />
+                <ComboBox fx:id="entryComboBox" promptText="Выберите статью"/>
+            </HBox>
+
+            <!-- Сводная информация -->
+            <HBox alignment="CENTER" spacing="40">
+                <Label text="Доход:" />
+                <Label fx:id="totalIncomeLabel" style="-fx-font-size: 14px; -fx-text-fill: green;" text="0.00" />
+                <Label text="Расход:" />
+                <Label fx:id="totalExpenseLabel" style="-fx-font-size: 14px; -fx-text-fill: crimson;" text="0.00" />
+            </HBox>
+
+            <!-- Лента доходов и расходов -->
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+                <VBox fx:id="transactionList" alignment="TOP_CENTER" spacing="10" style="-fx-padding: 10;">
+                    <!-- элементы -->
+                </VBox>
+            </ScrollPane>
+        </VBox>
+    </center>
+</BorderPane>

@@ -1,8 +1,11 @@
 package antonchuvashov.daopost;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class DBConnection {
     private static String url;
@@ -11,6 +14,19 @@ public class DBConnection {
     private static Connection connection;
 
     private DBConnection() {
+    }
+
+    public static void fromSettings() throws IOException {
+        Properties properties = new Properties();
+        try (InputStream inputStream = DBConnection.class.getClassLoader().getResourceAsStream("settings")) {
+            properties.load(inputStream);
+
+            String url = properties.getProperty("db.url");
+            String user = properties.getProperty("db.user");
+            String password = properties.getProperty("db.password");
+
+            setConnection(url, user, password);
+        }
     }
 
 
@@ -49,6 +65,9 @@ public class DBConnection {
     }
 
     public static Connection getConnection() throws SQLException {
+        if (connection.isClosed()) {
+            setConnection(DBConnection.url, DBConnection.user, DBConnection.password);
+        }
         return connection;
     }
 }
