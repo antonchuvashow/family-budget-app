@@ -18,7 +18,7 @@ public class Expense implements TransactionRecord {
     public Expense(int expenseId, String userId, BigDecimal amount, LocalDate date, int entryId, String entryName) {
         this.expenseId = expenseId;
         this.userId = new SimpleStringProperty(userId);
-        this.amount = new SimpleObjectProperty<>(amount);
+        this.amount = new SimpleObjectProperty<>(amount.negate());
         this.date = new SimpleObjectProperty<>(date);
         this.entryId = entryId;
         this.entryName = new SimpleStringProperty(entryName);

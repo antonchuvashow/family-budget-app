@@ -7,7 +7,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.List;
 
 public class MainController {
 
@@ -64,15 +66,34 @@ public class MainController {
         refreshData();
     }
 
-    // Настройка таблицы транзакций
     private void setupTransactionTable() {
+        // Связываем колонки с данными
         dateColumn.setCellValueFactory(cellData -> cellData.getValue().dateProperty());
         categoryColumn.setCellValueFactory(cellData -> cellData.getValue().categoryProperty());
         amountColumn.setCellValueFactory(cellData -> cellData.getValue().amountProperty());
         userColumn.setCellValueFactory(cellData -> cellData.getValue().userProperty());
 
-        // Настройка выбора строк для редактирования и удаления
-        transactionTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        // отображение суммы в ячейках
+        amountColumn.setCellFactory(column -> {
+            return new TableCell<TransactionRecord, BigDecimal>() {
+                @Override
+                protected void updateItem(BigDecimal item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        setText(String.format("%.2f", item));
+                        if (item.compareTo(BigDecimal.ZERO) > 0) {
+                            setTextFill(Color.DARKGREEN);
+                        } else {
+                            setTextFill(Color.CRIMSON);
+                        }
+                        setStyle("-fx-alignment: CENTER-RIGHT;");
+                    }
+                }
+            };
+        });
     }
 
     // Загрузка категорий в ComboBox
