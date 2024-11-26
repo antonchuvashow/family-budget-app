@@ -6,22 +6,21 @@ import javafx.beans.value.ObservableValue;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
-public class Income implements TransactionRecord{
+public class Income implements TransactionRecord {
     private final int incomeId;
     private final SimpleStringProperty userId;
     private final SimpleObjectProperty<BigDecimal> amount;
-    private final ObservableValue<LocalDate> operationDate;
+    private ObservableValue<LocalDate> date;
     private final int categoryId;
     private final SimpleStringProperty categoryName;
 
-    public Income(int incomeId, String userId, BigDecimal amount, LocalDate operationDate, int categoryId, String categoryName) {
+    public Income(int incomeId, String userId, BigDecimal amount, LocalDate date, int categoryId, String categoryName) {
         this.incomeId = incomeId;
         this.userId = new SimpleStringProperty(userId);
         this.amount = new SimpleObjectProperty<>(amount);
         this.categoryId = categoryId;
-        this.operationDate = new SimpleObjectProperty<>(operationDate);
+        this.date = new SimpleObjectProperty<>(date);
         this.categoryName = new SimpleStringProperty(categoryName);
     }
 
@@ -36,7 +35,7 @@ public class Income implements TransactionRecord{
 
     @Override
     public ObservableValue<LocalDate> dateProperty() {
-        return this.operationDate;
+        return this.date;
     }
 
     @Override
@@ -55,8 +54,23 @@ public class Income implements TransactionRecord{
     }
 
     @Override
-    public String getType() {
-        return "income";
+    public void setAmount(BigDecimal amount) {
+        this.amount.set(amount);
+    }
+
+    @Override
+    public void setUser(String user) {
+        this.userId.set(user);
+    }
+
+    @Override
+    public void setDate(LocalDate date) {
+        this.date = new SimpleObjectProperty<>(date);
+    }
+
+    @Override
+    public int getId() {
+        return this.incomeId;
     }
 
     @Override
@@ -70,7 +84,7 @@ public class Income implements TransactionRecord{
     }
 
     public LocalDate getDate() {
-        return operationDate.getValue();
+        return date.getValue();
     }
 
     @Override

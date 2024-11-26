@@ -106,7 +106,7 @@ public class MainController {
                 comboBox.getItems().add(category.getName());
             }
         } catch (SQLException e) {
-            LoginApp.showError("Не удалось получить катеогрии.");
+            LoginApp.showError("Не удалось получить катеогрии.\n\n" + e.getMessage());
         }
         comboBox.setValue("Все");
     }
@@ -120,7 +120,7 @@ public class MainController {
                 userComboBox.getItems().add(user.getUsername());
             }
         } catch (SQLException e) {
-            LoginApp.showError("Не удалось получить ползователей.");
+            LoginApp.showError("Не удалось получить ползователей.\n\n" + e.getMessage());
         }
         userComboBox.setValue(AuthenticationState.getInstance().getUsername());
     }
@@ -150,7 +150,7 @@ public class MainController {
 
             stage.showAndWait();
         } catch (IOException e) {
-            LoginApp.showError("Не удалось открыть окно редактора.");
+            LoginApp.showError("Не удалось открыть окно редактора.\n\n" + e.getMessage());
         }
     }
 
@@ -181,13 +181,13 @@ public class MainController {
         try {
             transactions.addAll(IncomeDAO.fetch(startDate, endDate, categoryFilter, personFilter));
         } catch (SQLException e) {
-            LoginApp.showError("Не удалось получить доходы из базы данных.");
+            LoginApp.showError("Не удалось получить доходы из базы данных.\n\n" + e.getMessage());
         }
 
         try {
             transactions.addAll(ExpenseDAO.fetch(startDate, endDate, entryFilter, personFilter));
         } catch (SQLException e) {
-            LoginApp.showError("Не удалось получить расходы из базы данных.");
+            LoginApp.showError("Не удалось получить расходы из базы данных.\n\n" + e.getMessage());
         }
 
         // Сортировка по дате
@@ -198,13 +198,66 @@ public class MainController {
 
         // Подсчитываем доходы и расходы
         for (TransactionRecord transaction : transactions) {
-            totalIncome = totalIncome.add(Objects.equals(transaction.getType(), "income") ? transaction.getAmount() : BigDecimal.ZERO);
-            totalExpense = totalExpense.add(Objects.equals(transaction.getType(), "expense") ? transaction.getAmount() : BigDecimal.ZERO);
+            totalIncome = totalIncome.add(Income.class.equals(transaction.getClass()) ? transaction.getAmount() : BigDecimal.ZERO);
+            totalExpense = totalExpense.add(Expense.class.equals(transaction.getClass()) ? transaction.getAmount() : BigDecimal.ZERO);
         }
 
         totalIncomeLabel.setText(String.format("%.2f", totalIncome));
         totalExpenseLabel.setText(String.format("%.2f", totalExpense));
     }
+
+    @FXML
+    private void handleAddTransaction() {
+        openTransactionEditor(null); // null означает, что добавляется новая транзакция
+    }
+
+    @FXML
+    private void handleEditTransaction() {
+        TransactionRecord selected = transactionTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            LoginApp.showError("Выберите транзакцию для редактирования.");
+            return;
+        }
+        openTransactionEditor(selected); // Передаём выбранную транзакцию для редактирования
+    }
+
+    @FXML
+    private void handleDeleteTransaction() {
+        TransactionRecord selected = transactionTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            LoginApp.showError("Выберите транзакцию для удаления.");
+            return;
+        }
+
+        try {
+            if (Income.class.equals(selected.getClass())) {
+                IncomeDAO.delete(selected.getId());
+            } else {
+                ExpenseDAO.delete(selected.getId());
+            }
+            transactionTable.getItems().remove(selected);
+        } catch (SQLException e) {
+            LoginApp.showError("Не удалось удалить транзакцию.\n\n" + e.getMessage());
+        }
+    }
+
+    private void openTransactionEditor(TransactionRecord transaction) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("transaction_editor.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle(transaction == null ? "Добавить транзакцию" : "Редактировать транзакцию");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(loader.load()));
+
+            TransactionEditorController controller = loader.getController();
+            controller.setContext(transaction); // Передаём транзакцию и метод обновления данных
+
+            stage.showAndWait();
+        } catch (IOException e) {
+            LoginApp.showError("Не удалось открыть редактор транзакций.\n\n" + e.getMessage());
+        }
+    }
+
 
     @FXML
     private void handleExit() {

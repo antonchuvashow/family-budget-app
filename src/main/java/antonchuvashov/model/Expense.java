@@ -5,13 +5,14 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
 
 public class Expense implements TransactionRecord {
     private final int expenseId;
     private final SimpleStringProperty userId;
     private final SimpleObjectProperty<BigDecimal> amount;
-    private final SimpleObjectProperty<LocalDate> date;
+    private SimpleObjectProperty<LocalDate> date;
     private final int entryId;
     private final SimpleStringProperty entryName;
 
@@ -54,8 +55,23 @@ public class Expense implements TransactionRecord {
     }
 
     @Override
-    public String getType() {
-        return "expense";
+    public void setAmount(BigDecimal amount) {
+        this.amount.set(amount);
+    }
+
+    @Override
+    public void setUser(String user) {
+        this.userId.set(user);
+    }
+
+    @Override
+    public void setDate(LocalDate date) {
+        this.date = new SimpleObjectProperty<>(date);
+    }
+
+    @Override
+    public int getId() {
+        return this.expenseId;
     }
 
     @Override

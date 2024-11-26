@@ -1,6 +1,7 @@
 package antonchuvashov.daopost;
 
 import antonchuvashov.model.Expense;
+import antonchuvashov.model.Income;
 import antonchuvashov.model.TransactionRecord;
 
 import java.sql.*;
@@ -61,5 +62,27 @@ public class ExpenseDAO {
                 (entryFilter != null ? "AND e.name = ? " : "") +
                 (personFilter != null ? "AND u.full_name = ? " : "");
         return connection.prepareStatement(query);
+    }
+
+    public static void delete(int entry_id) throws SQLException {
+        String query = "DELETE FROM ENTRY WHERE entry_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setInt(1, entry_id);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public static void update(Expense expense) throws SQLException {
+        String query = "UPDATE EXPENSE SET user_id = ?, amount = ?, operation_date = ?, entry_id = ? WHERE expense_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, expense.getUser());
+            preparedStatement.setBigDecimal(2, expense.getAmount());
+            preparedStatement.setDate(3, java.sql.Date.valueOf(expense.getDate()));
+            preparedStatement.setInt(4, expense.getEntryId());
+            preparedStatement.setInt(5, expense.getExpenseId());
+            preparedStatement.executeUpdate();
+        }
     }
 }

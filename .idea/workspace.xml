@@ -4,10 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ab42291d-034f-472c-b140-930920feccbb" name="Changes" comment="fix category display">
+    <list default="true" id="ab42291d-034f-472c-b140-930920feccbb" name="Changes" comment="add colored income and expense">
+      <change afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/TransactionEditorController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/antonchuvashov/familybudget/transaction_editor.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/daopost/ExpenseDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/daopost/ExpenseDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/MainController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/Expense.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/Expense.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/Income.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/Income.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/TransactionRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/TransactionRecord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/antonchuvashov/familybudget/main_window.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/antonchuvashov/familybudget/main_window.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,9 +24,9 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Dockerfile" />
-        <option value="FxmlFile" />
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
+        <option value="FxmlFile" />
       </list>
     </option>
   </component>
@@ -185,7 +191,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732632369510</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="add colored income and expense">
+      <option name="closed" value="true" />
+      <created>1732633241634</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1732633241634</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -209,6 +223,7 @@
     <MESSAGE value="add main window and settings" />
     <MESSAGE value="refactor code and add category editor" />
     <MESSAGE value="fix category display" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix category display" />
+    <MESSAGE value="add colored income and expense" />
+    <option name="LAST_COMMIT_MESSAGE" value="add colored income and expense" />
   </component>
 </project>

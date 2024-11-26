@@ -29,6 +29,12 @@
                 <Button onAction="#handleRefresh" text="Обновить" />
             </HBox>
 
+            <HBox alignment="CENTER" spacing="10" style="-fx-padding: 10;">
+                <Button text="Добавить" onAction="#handleAddTransaction" />
+                <Button text="Редактировать" onAction="#handleEditTransaction" />
+                <Button text="Удалить" onAction="#handleDeleteTransaction" />
+            </HBox>
+
             <!-- Фильтры: категория, статья, пользователь -->
             <HBox alignment="CENTER" spacing="20">
                 <Label text="Категория:" />
