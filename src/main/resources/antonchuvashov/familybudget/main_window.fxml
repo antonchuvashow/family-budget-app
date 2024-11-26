@@ -13,7 +13,6 @@
             <Menu text="Действия">
                 <MenuItem onAction="#handleAddIncomeCategory" text="Добавить категорию доходов" />
                 <MenuItem onAction="#handleAddExpenseCategory" text="Добавить статью расходов" />
-                <MenuItem onAction="#handleViewStatistics" text="Посмотреть статистику" />
             </Menu>
         </MenuBar>
     </top>
@@ -51,11 +50,16 @@
             </HBox>
 
             <!-- Лента доходов и расходов -->
-            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
-                <VBox fx:id="transactionList" alignment="TOP_CENTER" spacing="10" style="-fx-padding: 10;">
-                    <!-- элементы -->
-                </VBox>
-            </ScrollPane>
+            <VBox alignment="TOP_CENTER" spacing="10" style="-fx-padding: 10;">
+                <TableView fx:id="transactionTable" style="-fx-background-color: transparent; ">
+                    <columns>
+                        <TableColumn fx:id="dateColumn" text="Дата" />
+                        <TableColumn fx:id="categoryColumn" text="Категория" />
+                        <TableColumn fx:id="userColumn" text="Пользователь" />
+                        <TableColumn fx:id="amountColumn" text="Сумма" />
+                    </columns>
+                </TableView>
+            </VBox>
         </VBox>
     </center>
 </BorderPane>

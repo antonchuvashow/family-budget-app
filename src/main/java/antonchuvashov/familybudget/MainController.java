@@ -23,6 +23,89 @@ public class MainController {
     public ComboBox<String> userComboBox;
 
     @FXML
+    private TableView<TransactionRecord> transactionTable;
+
+    @FXML
+    private TableColumn<TransactionRecord, LocalDate> dateColumn;
+    @FXML
+    private TableColumn<TransactionRecord, String> categoryColumn;
+    @FXML
+    private TableColumn<TransactionRecord, BigDecimal> amountColumn;
+    @FXML
+    private TableColumn<TransactionRecord, String> userColumn;
+
+    @FXML
+    private DatePicker startDatePicker;
+
+    @FXML
+    private DatePicker endDatePicker;
+
+    @FXML
+    private Label totalIncomeLabel;
+
+    @FXML
+    private Label totalExpenseLabel;
+
+    @FXML
+    private ComboBox<String> categoryComboBox;
+
+    @FXML
+    private ComboBox<String> entryComboBox;
+
+    @FXML
+    public void initialize() {
+        // Устанавливаем текущий месяц по умолчанию
+        startDatePicker.setValue(LocalDate.now().withDayOfMonth(1));
+        endDatePicker.setValue(LocalDate.now());
+        loadCategories(IncomeCategoryDAO.getInstance(), categoryComboBox);
+        loadCategories(ExpenseCategoryDAO.getInstance(), entryComboBox);
+        loadUsers();
+        setupTransactionTable();
+        refreshData();
+    }
+
+    // Настройка таблицы транзакций
+    private void setupTransactionTable() {
+        dateColumn.setCellValueFactory(cellData -> cellData.getValue().dateProperty());
+        categoryColumn.setCellValueFactory(cellData -> cellData.getValue().categoryProperty());
+        amountColumn.setCellValueFactory(cellData -> cellData.getValue().amountProperty());
+        userColumn.setCellValueFactory(cellData -> cellData.getValue().userProperty());
+
+        // Настройка выбора строк для редактирования и удаления
+        transactionTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    }
+
+    // Загрузка категорий в ComboBox
+    private void loadCategories(CategoryDAO dao, ComboBox<String> comboBox) {
+        List<GeneralCategory> categories;
+        try {
+            categories = dao.getAll();
+            comboBox.getItems().add("Все");
+            for (GeneralCategory category : categories) {
+                comboBox.getItems().add(category.getName());
+            }
+        } catch (SQLException e) {
+            LoginApp.showError("Не удалось получить катеогрии.");
+        }
+        comboBox.setValue("Все");
+    }
+
+    // Загрузка пользователей
+    private void loadUsers() {
+        List<User> users;
+        try {
+            users = UserDAO.getAll();
+            for (User user : users) {
+                userComboBox.getItems().add(user.getUsername());
+            }
+        } catch (SQLException e) {
+            LoginApp.showError("Не удалось получить ползователей.");
+        }
+        userComboBox.setValue(AuthenticationState.getInstance().getUsername());
+    }
+
+    // Обработчики кнопок для добавления и просмотра
+    @FXML
     private void handleAddIncomeCategory() {
         openEditorWindow(IncomeCategoryDAO.getInstance());
     }
@@ -50,86 +133,13 @@ public class MainController {
         }
     }
 
-
-    @FXML
-    private void handleViewStatistics() {
-        System.out.println("Посмотреть статистику");
-    }
-
-    @FXML
-    private void handleExit() {
-        System.exit(0);
-    }
-
-    @FXML
-    private DatePicker startDatePicker;
-
-    @FXML
-    private DatePicker endDatePicker;
-
-    @FXML
-    private Label totalIncomeLabel;
-
-    @FXML
-    private Label totalExpenseLabel;
-
-    @FXML
-    private VBox transactionList;
-
-    @FXML
-    private ComboBox<String> categoryComboBox;
-
-    @FXML
-    private ComboBox<String> entryComboBox;
-
-    @FXML
-    public void initialize() {
-        // Устанавливаем текущий месяц по умолчанию
-        startDatePicker.setValue(LocalDate.now().withDayOfMonth(1));
-        endDatePicker.setValue(LocalDate.now());
-        loadCategories(categoryComboBox);
-        loadCategories(entryComboBox);
-        loadUsers();
-        refreshData();
-
-        userComboBox.setDisable(!AuthenticationState.getInstance().isAdmin());
-    }
-
-    // Загрузка категорий
-    private void loadCategories(ComboBox<String> comboBox) {
-        List<GeneralCategory> categories;
-        try {
-            categories = IncomeCategoryDAO.getInstance().getAll();
-            comboBox.getItems().add("Все");
-            for (GeneralCategory category : categories) {
-                comboBox.getItems().add(category.getName());
-            }
-        } catch (SQLException e) {
-            LoginApp.showError("Не удалось получить катеогрии.");
-        }
-        comboBox.setValue("Все");
-    }
-
-    private void loadUsers() {
-        List<User> users;
-        try {
-            users = UserDAO.getAll();
-            for (User user : users) {
-                userComboBox.getItems().add(user.getUsername());
-            }
-        } catch (SQLException e) {
-            LoginApp.showError("Не удалось получить ползователей.");
-        }
-        userComboBox.setValue(AuthenticationState.getInstance().getUsername());
-    }
-
+    // Обновление данных в таблице
     @FXML
     private void handleRefresh() {
         refreshData();
     }
 
     private void refreshData() {
-        transactionList.getChildren().clear();
         BigDecimal totalIncome = BigDecimal.ZERO;
         BigDecimal totalExpense = BigDecimal.ZERO;
 
@@ -162,42 +172,21 @@ public class MainController {
         // Сортировка по дате
         transactions.sort(Comparator.comparing(TransactionRecord::getDate));
 
-        // Отображение транзакций
+        // Обновляем таблицу
+        transactionTable.getItems().setAll(transactions);
+
+        // Подсчитываем доходы и расходы
         for (TransactionRecord transaction : transactions) {
             totalIncome = totalIncome.add(Objects.equals(transaction.getType(), "income") ? transaction.getAmount() : BigDecimal.ZERO);
             totalExpense = totalExpense.add(Objects.equals(transaction.getType(), "expense") ? transaction.getAmount() : BigDecimal.ZERO);
-            addTransactionToList(
-                    transaction.getAmount(),
-                    transaction.getName(),
-                    transaction.getDate().toString(),
-                    transaction.getColor(),
-                    transaction.getUser()
-            );
         }
 
         totalIncomeLabel.setText(String.format("%.2f", totalIncome));
         totalExpenseLabel.setText(String.format("%.2f", totalExpense));
     }
 
-
-    private void addTransactionToList(BigDecimal amount, String category, String date, String color, String user) {
-        // Сумма
-        Label amountLabel = new Label(String.format("%+.2f", amount));
-        amountLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: " + color + ";");
-
-        // Категория
-        Label categoryLabel = new Label(category);
-        categoryLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: gray;");
-
-        // Дата и пользователь
-        Label dateLabel = new Label(date + " • " + user);
-        dateLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: gray;");
-
-        // Контейнер для одной транзакции
-        VBox transactionBox = new VBox(amountLabel, categoryLabel, dateLabel);
-        transactionBox.setSpacing(2);
-        transactionBox.setAlignment(Pos.BASELINE_LEFT);
-
-        transactionList.getChildren().add(transactionBox);
+    @FXML
+    private void handleExit() {
+        System.exit(0);
     }
 }

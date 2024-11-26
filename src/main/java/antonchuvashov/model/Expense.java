@@ -1,40 +1,56 @@
 package antonchuvashov.model;
 
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
+
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Expense implements TransactionRecord {
-    private int expenseId;
-    private String userId;
-    private BigDecimal amount;
-    private Date operationDate;
-    private int entryId;
-    private final String entryName;
+    private final int expenseId;
+    private final SimpleStringProperty userId;
+    private final SimpleObjectProperty<BigDecimal> amount;
+    private final SimpleObjectProperty<LocalDate> date;
+    private final int entryId;
+    private final SimpleStringProperty entryName;
 
-    public Expense(int expenseId, String userId, BigDecimal amount, Date operationDate, int entryId, String entryName) {
+    public Expense(int expenseId, String userId, BigDecimal amount, LocalDate date, int entryId, String entryName) {
         this.expenseId = expenseId;
-        this.userId = userId;
-        this.amount = amount;
-        this.operationDate = operationDate;
+        this.userId = new SimpleStringProperty(userId);
+        this.amount = new SimpleObjectProperty<>(amount);
+        this.date = new SimpleObjectProperty<>(date);
         this.entryId = entryId;
-        this.entryName = entryName;
+        this.entryName = new SimpleStringProperty(entryName);
     }
 
     public int getExpenseId() {
         return expenseId;
     }
 
-    public void setExpenseId(int expenseId) {
-        this.expenseId = expenseId;
+    @Override
+    public String getUser() {
+        return userId.getValue();
     }
 
     @Override
-    public String getUser() {
-        return userId;
+    public ObservableValue<LocalDate> dateProperty() {
+        return this.date;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    @Override
+    public ObservableValue<String> categoryProperty() {
+        return this.entryName;
+    }
+
+    @Override
+    public ObservableValue<BigDecimal> amountProperty() {
+        return this.amount;
+    }
+
+    @Override
+    public ObservableValue<String> userProperty() {
+        return this.userId;
     }
 
     @Override
@@ -44,12 +60,12 @@ public class Expense implements TransactionRecord {
 
     @Override
     public BigDecimal getAmount() {
-        return amount;
+        return amount.getValue();
     }
 
     @Override
     public String getName() {
-        return entryName;
+        return entryName.getValue();
     }
 
     @Override
@@ -57,24 +73,12 @@ public class Expense implements TransactionRecord {
         return "crimson";
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
     @Override
-    public Date getDate() {
-        return operationDate;
-    }
-
-    public void setOperationDate(Date operationDate) {
-        this.operationDate = operationDate;
+    public LocalDate getDate() {
+        return date.getValue();
     }
 
     public int getEntryId() {
         return entryId;
-    }
-
-    public void setEntryId(int entryId) {
-        this.entryId = entryId;
     }
 }

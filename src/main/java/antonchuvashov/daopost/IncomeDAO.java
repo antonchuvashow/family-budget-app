@@ -17,7 +17,7 @@ public class IncomeDAO {
             preparedStatement.setInt(1, income.getIncomeId());
             preparedStatement.setString(2, income.getUser());
             preparedStatement.setBigDecimal(3, income.getAmount());
-            preparedStatement.setDate(4, new java.sql.Date(income.getDate().getTime()));
+            preparedStatement.setDate(4, java.sql.Date.valueOf(income.getDate()));
             preparedStatement.setInt(5, income.getCategoryId());
             preparedStatement.executeUpdate();
         }
@@ -29,7 +29,7 @@ public class IncomeDAO {
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, income.getUser());
             preparedStatement.setBigDecimal(2, income.getAmount());
-            preparedStatement.setDate(3, new java.sql.Date(income.getDate().getTime()));
+            preparedStatement.setDate(3, java.sql.Date.valueOf(income.getDate()));
             preparedStatement.setInt(4, income.getCategoryId());
             preparedStatement.setInt(5, income.getIncomeId());
             preparedStatement.executeUpdate();
@@ -65,7 +65,7 @@ public class IncomeDAO {
                     result.getInt("income_id"),
                     result.getString("full_name"),
                     result.getBigDecimal("amount"),
-                    result.getDate("operation_date"),
+                    result.getDate("operation_date").toLocalDate(),
                     result.getInt("category_id"),
                     result.getString("category")
             ));

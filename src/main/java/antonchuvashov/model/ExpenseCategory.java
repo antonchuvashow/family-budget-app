@@ -21,7 +21,7 @@ public class ExpenseCategory implements GeneralCategory {
     }
 
     public String getName() {
-        return name.getName();
+        return name.getValue();
     }
 
     public void setName(String name) {

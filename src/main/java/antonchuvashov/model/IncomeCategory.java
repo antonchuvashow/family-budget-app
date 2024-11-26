@@ -21,7 +21,7 @@ public class IncomeCategory implements GeneralCategory {
     }
 
     public String getName() {
-        return name.getName();
+        return name.getValue();
     }
 
     public void setName(String name) {

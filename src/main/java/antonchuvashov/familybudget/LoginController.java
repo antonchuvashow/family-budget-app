@@ -46,7 +46,6 @@ public class LoginController {
                 if (checkCredentials(username, password)) {
                     AuthenticationState.getInstance().login(username, isOlderThan(username, 18));
                     Stage loginStage = (Stage) usernameField.getScene().getWindow();
-                    loginStage.close();
 
                     // Открытие главного окна
                     FXMLLoader loader = new FXMLLoader(LoginApp.class.getResource("main_window.fxml"));
@@ -58,6 +57,8 @@ public class LoginController {
 
                     stage.setTitle("Семейный бюджет");
                     stage.show();
+
+                    loginStage.close();
                 } else {
                     errorLabel.setText("Неверный логин или пароль.");
                 }
@@ -65,6 +66,7 @@ public class LoginController {
                 errorLabel.setText("Не удалось подключиться к базе данных.");
             }
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             errorLabel.setText("Произошла ошибка. Попробуйте еще раз.");
         }
     }

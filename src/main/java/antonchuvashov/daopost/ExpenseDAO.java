@@ -17,7 +17,7 @@ public class ExpenseDAO {
             preparedStatement.setInt(1, expense.getExpenseId());
             preparedStatement.setString(2, expense.getUser());
             preparedStatement.setBigDecimal(3, expense.getAmount());
-            preparedStatement.setDate(4, new java.sql.Date(expense.getDate().getTime()));
+            preparedStatement.setDate(4, java.sql.Date.valueOf(expense.getDate()));
             preparedStatement.setInt(5, expense.getEntryId());
             preparedStatement.executeUpdate();
         }
@@ -43,7 +43,7 @@ public class ExpenseDAO {
                     result.getInt("expense_id"),
                     result.getString("full_name"),
                     result.getBigDecimal("amount"),
-                    result.getDate("operation_date"),
+                    result.getDate("operation_date").toLocalDate(),
                     result.getInt("entry_id"),
                     result.getString("entry")
             ));
