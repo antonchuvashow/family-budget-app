@@ -3,14 +3,16 @@ package antonchuvashov.familybudget;
 import antonchuvashov.daopost.*;
 import antonchuvashov.model.*;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
@@ -18,14 +20,36 @@ import java.util.*;
 public class MainController {
 
     @FXML
-    private void handleAddIncome() {
-        System.out.println("Добавить доход");
+    public ComboBox<String> userComboBox;
+
+    @FXML
+    private void handleAddIncomeCategory() {
+        openEditorWindow(IncomeCategoryDAO.getInstance());
     }
 
     @FXML
-    private void handleAddExpense() {
-        System.out.println("Добавить расход");
+    private void handleAddExpenseCategory() {
+        openEditorWindow(ExpenseCategoryDAO.getInstance());
     }
+
+    private void openEditorWindow(CategoryDAO dao) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Editor.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Редактор категорий");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(loader.load()));
+
+            // Передаём контекст в контроллер
+            EditorController controller = loader.getController();
+            controller.setContext("Редактор категорий", dao);
+
+            stage.showAndWait();
+        } catch (IOException e) {
+            LoginApp.showError("Не удалось открыть окно редактора.");
+        }
+    }
+
 
     @FXML
     private void handleViewStatistics() {
@@ -63,39 +87,40 @@ public class MainController {
         // Устанавливаем текущий месяц по умолчанию
         startDatePicker.setValue(LocalDate.now().withDayOfMonth(1));
         endDatePicker.setValue(LocalDate.now());
-        loadCategories();
-        loadEntries();
+        loadCategories(categoryComboBox);
+        loadCategories(entryComboBox);
+        loadUsers();
         refreshData();
+
+        userComboBox.setDisable(!AuthenticationState.getInstance().isAdmin());
     }
 
     // Загрузка категорий
-    private void loadCategories() {
-        List<Category> categories;
+    private void loadCategories(ComboBox<String> comboBox) {
+        List<GeneralCategory> categories;
         try {
-            categories = CategoryDAO.getAllCategories();
-            categoryComboBox.getItems().add("Все");
-            for (Category category : categories) {
-                categoryComboBox.getItems().add(category.getName());
+            categories = IncomeCategoryDAO.getInstance().getAll();
+            comboBox.getItems().add("Все");
+            for (GeneralCategory category : categories) {
+                comboBox.getItems().add(category.getName());
             }
         } catch (SQLException e) {
-            showError("Не удалось получить катеогрии доходов.");
+            LoginApp.showError("Не удалось получить катеогрии.");
         }
-        categoryComboBox.setValue("Все");
+        comboBox.setValue("Все");
     }
 
-    // Загрузка статей
-    private void loadEntries() {
-        List<Entry> entries;
+    private void loadUsers() {
+        List<User> users;
         try {
-            entries = EntryDAO.getAllEntries();
-            entryComboBox.getItems().add("Все");
-            for (Entry entry : entries) {
-                entryComboBox.getItems().add(entry.getName());
+            users = UserDAO.getAll();
+            for (User user : users) {
+                userComboBox.getItems().add(user.getUsername());
             }
         } catch (SQLException e) {
-            showError("Не удалось получить статьи расходов.");
+            LoginApp.showError("Не удалось получить ползователей.");
         }
-        entryComboBox.setValue("Все");
+        userComboBox.setValue(AuthenticationState.getInstance().getUsername());
     }
 
     @FXML
@@ -112,18 +137,27 @@ public class MainController {
         LocalDate endDate = endDatePicker.getValue();
 
         if (startDate == null || endDate == null) {
-            showError("Пожалуйста, выберите временной промежуток.");
+            LoginApp.showError("Пожалуйста, выберите временной промежуток.");
             return;
         }
 
         String categoryFilter = categoryComboBox.getValue().equals("Все") ? null : categoryComboBox.getValue();
         String entryFilter = entryComboBox.getValue().equals("Все") ? null : entryComboBox.getValue();
-        String personFilter = null;
+        String personFilter = userComboBox.getValue();
 
         // Загрузка данных
         List<TransactionRecord> transactions = new ArrayList<>();
-        transactions.addAll(IncomeDAO.fetchIncomes(startDate, endDate, categoryFilter, personFilter));
-        transactions.addAll(ExpenseDAO.fetchExpenses(startDate, endDate, entryFilter, personFilter));
+        try {
+            transactions.addAll(IncomeDAO.fetch(startDate, endDate, categoryFilter, personFilter));
+        } catch (SQLException e) {
+            LoginApp.showError("Не удалось получить доходы из базы данных.");
+        }
+
+        try {
+            transactions.addAll(ExpenseDAO.fetch(startDate, endDate, entryFilter, personFilter));
+        } catch (SQLException e) {
+            LoginApp.showError("Не удалось получить расходы из базы данных.");
+        }
 
         // Сортировка по дате
         transactions.sort(Comparator.comparing(TransactionRecord::getDate));
@@ -165,13 +199,5 @@ public class MainController {
         transactionBox.setAlignment(Pos.BASELINE_LEFT);
 
         transactionList.getChildren().add(transactionBox);
-    }
-
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Ошибка");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

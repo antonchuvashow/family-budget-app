@@ -16,6 +16,8 @@ import javafx.scene.Parent;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import static antonchuvashov.daopost.UserDAO.isOlderThan;
+
 public class LoginController {
 
     @FXML
@@ -42,6 +44,7 @@ public class LoginController {
             if (DBConnection.isValidConnection()) {
                 // Логика успешного логина
                 if (checkCredentials(username, password)) {
+                    AuthenticationState.getInstance().login(username, isOlderThan(username, 18));
                     Stage loginStage = (Stage) usernameField.getScene().getWindow();
                     loginStage.close();
 
@@ -51,21 +54,17 @@ public class LoginController {
                     Stage stage = new Stage();
                     stage.setScene(new Scene(root, 400, 400));
                     stage.setMinWidth(800);
-//                    stage.setMaxWidth(400);
                     stage.setMinHeight(400);
-//                    stage.setMaxHeight(400);
 
                     stage.setTitle("Семейный бюджет");
                     stage.show();
                 } else {
                     errorLabel.setText("Неверный логин или пароль.");
                 }
-
             } else {
                 errorLabel.setText("Не удалось подключиться к базе данных.");
             }
         } catch (Exception e) {
-            e.printStackTrace();
             errorLabel.setText("Произошла ошибка. Попробуйте еще раз.");
         }
     }
@@ -89,10 +88,7 @@ public class LoginController {
     }
 
     private boolean checkCredentials(String username, String password) throws SQLException {
-        User user = UserDAO.getUser(username);
-        if (user == null || !user.getPassword().equals(password)) {
-            return false;
-        }
-        return true;
+        User user = UserDAO.get(username);
+        return user != null && user.getPassword().equals(password);
     }
 }

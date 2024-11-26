@@ -2,11 +2,12 @@ package antonchuvashov.daopost;
 
 import antonchuvashov.model.User;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.sql.*;
 
 public class UserDAO {
-    public static void addUser(User user) throws SQLException {
+    public static void add(User user) throws SQLException {
         String query = "INSERT INTO users (username, password, full_name, birth_date, sum) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -20,7 +21,7 @@ public class UserDAO {
         }
     }
 
-    public static User getUser(String username) throws SQLException {
+    public static User get(String username) throws SQLException {
         String query = "SELECT * FROM users WHERE username = ?";
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -41,7 +42,7 @@ public class UserDAO {
         }
     }
 
-    public static ArrayList<User> getAllUsers() throws SQLException {
+    public static ArrayList<User> getAll() throws SQLException {
         ArrayList<User> users = new ArrayList<>();
         String query = "SELECT * FROM users";
         try (Connection connection = DBConnection.getConnection();
@@ -60,7 +61,16 @@ public class UserDAO {
         return users;
     }
 
-    public static void updateUser(User user) throws SQLException {
+    public static boolean isOlderThan(String username, int age) throws SQLException {
+        User user = get(username);
+        if (user == null) {
+            throw new IllegalArgumentException("Пользователь не найден");
+        }
+        Date ageThreshold = Date.valueOf(LocalDate.now().minusYears(age));
+        return user.getBirthday().before(ageThreshold);
+    }
+
+    public static void update(User user) throws SQLException {
         String query = "UPDATE users SET password = ?, full_name = ?, birth_date = ?, sum = ? WHERE username = ?";
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -74,7 +84,7 @@ public class UserDAO {
         }
     }
 
-    public static void deleteUser(String username) throws SQLException {
+    public static void delete(String username) throws SQLException {
         String query = "DELETE FROM users WHERE username = ?";
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {

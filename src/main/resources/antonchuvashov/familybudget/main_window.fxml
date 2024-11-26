@@ -3,8 +3,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="antonchuvashov.familybudget.MainController">
     <!-- Верхнее меню -->
     <top>
@@ -13,8 +11,8 @@
                 <MenuItem onAction="#handleExit" text="Выход" />
             </Menu>
             <Menu text="Действия">
-                <MenuItem onAction="#handleAddIncome" text="Добавить доход" />
-                <MenuItem onAction="#handleAddExpense" text="Добавить расход" />
+                <MenuItem onAction="#handleAddIncomeCategory" text="Добавить категорию доходов" />
+                <MenuItem onAction="#handleAddExpenseCategory" text="Добавить статью расходов" />
                 <MenuItem onAction="#handleViewStatistics" text="Посмотреть статистику" />
             </Menu>
         </MenuBar>
@@ -32,13 +30,16 @@
                 <Button onAction="#handleRefresh" text="Обновить" />
             </HBox>
 
-            <!-- Фильтры: категория и статья -->
+            <!-- Фильтры: категория, статья, пользователь -->
             <HBox alignment="CENTER" spacing="20">
                 <Label text="Категория:" />
                 <ComboBox fx:id="categoryComboBox" promptText="Выберите категорию"/>
 
                 <Label text="Статья:" />
                 <ComboBox fx:id="entryComboBox" promptText="Выберите статью"/>
+
+                <Label text="Пользователь:" />
+                <ComboBox fx:id="userComboBox" promptText="Выберите пользователя"/>
             </HBox>
 
             <!-- Сводная информация -->
