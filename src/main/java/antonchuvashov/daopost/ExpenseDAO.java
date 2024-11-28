@@ -1,6 +1,7 @@
 package antonchuvashov.daopost;
 
 import antonchuvashov.model.Expense;
+import antonchuvashov.model.ExpenseCategory;
 import antonchuvashov.model.Income;
 import antonchuvashov.model.TransactionRecord;
 
@@ -12,14 +13,13 @@ import java.util.List;
 public class ExpenseDAO {
 
     public static void add(Expense expense) throws SQLException {
-        String query = "INSERT INTO EXPENSE (expense_id, user_id, amount, operation_date, entry_id) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO EXPENSE (user_id, amount, operation_date, entry_id) VALUES (?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setInt(1, expense.getExpenseId());
-            preparedStatement.setString(2, expense.getUser());
-            preparedStatement.setBigDecimal(3, expense.getAmount());
-            preparedStatement.setDate(4, java.sql.Date.valueOf(expense.getDate()));
-            preparedStatement.setInt(5, expense.getEntryId());
+            preparedStatement.setString(1, expense.getUser());
+            preparedStatement.setBigDecimal(2, expense.getAmount());
+            preparedStatement.setDate(3, java.sql.Date.valueOf(expense.getDate()));
+            preparedStatement.setInt(4, expense.getCategory().getId());
             preparedStatement.executeUpdate();
         }
     }
@@ -45,8 +45,8 @@ public class ExpenseDAO {
                     result.getString("full_name"),
                     result.getBigDecimal("amount"),
                     result.getDate("operation_date").toLocalDate(),
-                    result.getInt("entry_id"),
-                    result.getString("entry")
+                    new ExpenseCategory(result.getInt("entry_id"),
+                            result.getString("entry"))
             ));
         }
         return expenses;
@@ -65,7 +65,7 @@ public class ExpenseDAO {
     }
 
     public static void delete(int entry_id) throws SQLException {
-        String query = "DELETE FROM ENTRY WHERE entry_id = ?";
+        String query = "DELETE FROM EXPENSE WHERE expense_id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setInt(1, entry_id);
@@ -80,7 +80,7 @@ public class ExpenseDAO {
             preparedStatement.setString(1, expense.getUser());
             preparedStatement.setBigDecimal(2, expense.getAmount());
             preparedStatement.setDate(3, java.sql.Date.valueOf(expense.getDate()));
-            preparedStatement.setInt(4, expense.getEntryId());
+            preparedStatement.setInt(4, expense.getCategory().getId());
             preparedStatement.setInt(5, expense.getExpenseId());
             preparedStatement.executeUpdate();
         }

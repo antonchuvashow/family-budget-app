@@ -69,32 +69,41 @@ public class MainController {
     private void setupTransactionTable() {
         // Связываем колонки с данными
         dateColumn.setCellValueFactory(cellData -> cellData.getValue().dateProperty());
-        categoryColumn.setCellValueFactory(cellData -> cellData.getValue().categoryProperty());
+        categoryColumn.setCellValueFactory(cellData -> cellData.getValue().getCategory().nameProperty());
         amountColumn.setCellValueFactory(cellData -> cellData.getValue().amountProperty());
         userColumn.setCellValueFactory(cellData -> cellData.getValue().userProperty());
 
-        // отображение суммы в ячейках
+        // Кастомное отображение суммы в таблице
         amountColumn.setCellFactory(column -> {
             return new TableCell<TransactionRecord, BigDecimal>() {
                 @Override
                 protected void updateItem(BigDecimal item, boolean empty) {
                     super.updateItem(item, empty);
+
                     if (item == null || empty) {
                         setText(null);
                         setStyle("");
                     } else {
-                        setText(String.format("%.2f", item));
-                        if (item.compareTo(BigDecimal.ZERO) > 0) {
-                            setTextFill(Color.DARKGREEN);
-                        } else {
-                            setTextFill(Color.CRIMSON);
+                        // Получаем строку, чтобы определить тип транзакции
+                        TransactionRecord record = getTableRow().getItem();
+
+                        if (record != null) {
+                            // Отображаем знак "+" для доходов и "-" для расходов
+                            if (record.getClass().equals(Income.class)) {
+                                setText(String.format("+%.2f", item));
+                                setTextFill(Color.DARKGREEN); // Зеленый для доходов
+                            } else if (record.getClass().equals(Expense.class)) {
+                                setText(String.format("-%.2f", item));
+                                setTextFill(Color.CRIMSON); // Красный для расходов
+                            }
+                            setStyle("-fx-alignment: CENTER-RIGHT;");
                         }
-                        setStyle("-fx-alignment: CENTER-RIGHT;");
                     }
                 }
             };
         });
     }
+
 
     // Загрузка категорий в ComboBox
     private void loadCategories(CategoryDAO dao, ComboBox<String> comboBox) {
@@ -208,7 +217,8 @@ public class MainController {
 
     @FXML
     private void handleAddTransaction() {
-        openTransactionEditor(null); // null означает, что добавляется новая транзакция
+        openTransactionEditor(null); // добавляется новая транзакция
+        refreshData();
     }
 
     @FXML
@@ -219,6 +229,7 @@ public class MainController {
             return;
         }
         openTransactionEditor(selected); // Передаём выбранную транзакцию для редактирования
+        refreshData();
     }
 
     @FXML
@@ -233,12 +244,15 @@ public class MainController {
             if (Income.class.equals(selected.getClass())) {
                 IncomeDAO.delete(selected.getId());
             } else {
+                System.out.println(selected.getId());
                 ExpenseDAO.delete(selected.getId());
             }
             transactionTable.getItems().remove(selected);
         } catch (SQLException e) {
+            e.printStackTrace();
             LoginApp.showError("Не удалось удалить транзакцию.\n\n" + e.getMessage());
         }
+        refreshData();
     }
 
     private void openTransactionEditor(TransactionRecord transaction) {

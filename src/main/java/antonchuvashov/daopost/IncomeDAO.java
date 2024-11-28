@@ -1,6 +1,7 @@
 package antonchuvashov.daopost;
 
 import antonchuvashov.model.Income;
+import antonchuvashov.model.IncomeCategory;
 import antonchuvashov.model.TransactionRecord;
 
 import java.sql.*;
@@ -11,14 +12,13 @@ import java.util.List;
 public class IncomeDAO {
 
     public static void add(Income income) throws SQLException {
-        String query = "INSERT INTO INCOME (income_id, user_id, amount, operation_date, category_id) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO INCOME (user_id, amount, operation_date, category_id) VALUES (?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setInt(1, income.getIncomeId());
-            preparedStatement.setString(2, income.getUser());
-            preparedStatement.setBigDecimal(3, income.getAmount());
-            preparedStatement.setDate(4, java.sql.Date.valueOf(income.getDate()));
-            preparedStatement.setInt(5, income.getCategoryId());
+            preparedStatement.setString(1, income.getUser());
+            preparedStatement.setBigDecimal(2, income.getAmount());
+            preparedStatement.setDate(3, java.sql.Date.valueOf(income.getDate()));
+            preparedStatement.setInt(4, income.getCategory().getId());
             preparedStatement.executeUpdate();
         }
     }
@@ -30,7 +30,7 @@ public class IncomeDAO {
             preparedStatement.setString(1, income.getUser());
             preparedStatement.setBigDecimal(2, income.getAmount());
             preparedStatement.setDate(3, java.sql.Date.valueOf(income.getDate()));
-            preparedStatement.setInt(4, income.getCategoryId());
+            preparedStatement.setInt(4, income.getCategory().getId());
             preparedStatement.setInt(5, income.getIncomeId());
             preparedStatement.executeUpdate();
         }
@@ -66,8 +66,8 @@ public class IncomeDAO {
                     result.getString("full_name"),
                     result.getBigDecimal("amount"),
                     result.getDate("operation_date").toLocalDate(),
-                    result.getInt("category_id"),
-                    result.getString("category")
+                    new IncomeCategory(result.getInt("category_id"),
+                            result.getString("category"))
             ));
         }
         return incomes;

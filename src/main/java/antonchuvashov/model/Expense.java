@@ -13,16 +13,14 @@ public class Expense implements TransactionRecord {
     private final SimpleStringProperty userId;
     private final SimpleObjectProperty<BigDecimal> amount;
     private SimpleObjectProperty<LocalDate> date;
-    private final int entryId;
-    private final SimpleStringProperty entryName;
+    private SimpleObjectProperty<GeneralCategory> category;
 
-    public Expense(int expenseId, String userId, BigDecimal amount, LocalDate date, int entryId, String entryName) {
+    public Expense(int expenseId, String userId, BigDecimal amount, LocalDate date, GeneralCategory category) {
         this.expenseId = expenseId;
         this.userId = new SimpleStringProperty(userId);
-        this.amount = new SimpleObjectProperty<>(amount.negate());
+        this.amount = new SimpleObjectProperty<>(amount);
         this.date = new SimpleObjectProperty<>(date);
-        this.entryId = entryId;
-        this.entryName = new SimpleStringProperty(entryName);
+        this.category = new SimpleObjectProperty<>(category);
     }
 
     public int getExpenseId() {
@@ -37,11 +35,6 @@ public class Expense implements TransactionRecord {
     @Override
     public ObservableValue<LocalDate> dateProperty() {
         return this.date;
-    }
-
-    @Override
-    public ObservableValue<String> categoryProperty() {
-        return this.entryName;
     }
 
     @Override
@@ -70,6 +63,11 @@ public class Expense implements TransactionRecord {
     }
 
     @Override
+    public void setCategory(GeneralCategory category) {
+        this.category = new SimpleObjectProperty<>(category);
+    }
+
+    @Override
     public int getId() {
         return this.expenseId;
     }
@@ -80,21 +78,12 @@ public class Expense implements TransactionRecord {
     }
 
     @Override
-    public String getName() {
-        return entryName.getValue();
-    }
-
-    @Override
-    public String getColor() {
-        return "crimson";
+    public GeneralCategory getCategory() {
+        return this.category.getValue();
     }
 
     @Override
     public LocalDate getDate() {
         return date.getValue();
-    }
-
-    public int getEntryId() {
-        return entryId;
     }
 }

@@ -1,5 +1,6 @@
 package antonchuvashov.model;
 
+import antonchuvashov.daopost.IncomeCategoryDAO;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -12,16 +13,14 @@ public class Income implements TransactionRecord {
     private final SimpleStringProperty userId;
     private final SimpleObjectProperty<BigDecimal> amount;
     private ObservableValue<LocalDate> date;
-    private final int categoryId;
-    private final SimpleStringProperty categoryName;
+    private SimpleObjectProperty<GeneralCategory> category;
 
-    public Income(int incomeId, String userId, BigDecimal amount, LocalDate date, int categoryId, String categoryName) {
+    public Income(int incomeId, String userId, BigDecimal amount, LocalDate date, GeneralCategory category) {
         this.incomeId = incomeId;
         this.userId = new SimpleStringProperty(userId);
         this.amount = new SimpleObjectProperty<>(amount);
-        this.categoryId = categoryId;
         this.date = new SimpleObjectProperty<>(date);
-        this.categoryName = new SimpleStringProperty(categoryName);
+        this.category = new SimpleObjectProperty<>(category);
     }
 
     public int getIncomeId() {
@@ -36,11 +35,6 @@ public class Income implements TransactionRecord {
     @Override
     public ObservableValue<LocalDate> dateProperty() {
         return this.date;
-    }
-
-    @Override
-    public ObservableValue<String> categoryProperty() {
-        return this.categoryName;
     }
 
     @Override
@@ -69,6 +63,11 @@ public class Income implements TransactionRecord {
     }
 
     @Override
+    public void setCategory(GeneralCategory category) {
+        this.category = new SimpleObjectProperty<>(category);
+    }
+
+    @Override
     public int getId() {
         return this.incomeId;
     }
@@ -78,21 +77,11 @@ public class Income implements TransactionRecord {
         return amount.getValue();
     }
 
-    @Override
-    public String getName() {
-        return categoryName.getValue();
-    }
-
     public LocalDate getDate() {
         return date.getValue();
     }
 
-    @Override
-    public String getColor() {
-        return "green";
-    }
-
-    public int getCategoryId() {
-        return categoryId;
+    public IncomeCategory getCategory() {
+        return (IncomeCategory) category.getValue();
     }
 }

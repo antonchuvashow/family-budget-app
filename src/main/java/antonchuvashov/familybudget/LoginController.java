@@ -41,6 +41,7 @@ public class LoginController {
 
         try {
             // Проверка подключения к базе данных
+            DBConnection.fromSettings();
             if (DBConnection.isValidConnection()) {
                 // Логика успешного логина
                 if (checkCredentials(username, password)) {
@@ -66,8 +67,7 @@ public class LoginController {
                 errorLabel.setText("Не удалось подключиться к базе данных.");
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            errorLabel.setText("Произошла ошибка. Попробуйте еще раз.");
+            errorLabel.setText("Произошла ошибка. Попробуйте еще раз.\n\n" + e.getMessage());
         }
     }
 

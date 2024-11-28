@@ -11,17 +11,13 @@ public interface TransactionRecord {
 
     public BigDecimal getAmount();
 
-    public String getName();
+    public GeneralCategory getCategory();
 
     public LocalDate getDate();
-
-    public String getColor();
 
     public String getUser();
 
     ObservableValue<LocalDate> dateProperty();
-
-    ObservableValue<String> categoryProperty();
 
     ObservableValue<BigDecimal> amountProperty();
 
@@ -32,4 +28,6 @@ public interface TransactionRecord {
     void setUser(String user);
 
     void setDate(LocalDate date);
+
+    void setCategory(GeneralCategory category);
 }

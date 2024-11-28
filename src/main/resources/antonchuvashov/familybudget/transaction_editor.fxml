@@ -15,14 +15,17 @@
         <Label text="Дата:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
         <DatePicker fx:id="datePicker" GridPane.rowIndex="0" GridPane.columnIndex="1" />
 
-        <Label text="Категория:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-        <ComboBox fx:id="categoryComboBox" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="Выберите категорию" />
+        <Label text="Тип: " GridPane.rowIndex="1" GridPane.columnIndex="0" />
+        <ComboBox fx:id="typeComboBox" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="Выберите тип" />
 
-        <Label text="Пользователь:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-        <ComboBox fx:id="userComboBox" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="Выберите пользователя" />
+        <Label text="Категория:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+        <ComboBox fx:id="categoryComboBox" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="Выберите категорию" />
 
-        <Label text="Сумма:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-        <TextField fx:id="amountField" GridPane.rowIndex="3" GridPane.columnIndex="1" promptText="Введите сумму" />
+        <Label text="Пользователь:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+        <ComboBox fx:id="userComboBox" GridPane.rowIndex="3" GridPane.columnIndex="1" promptText="Выберите пользователя" />
+
+        <Label text="Сумма:" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+        <TextField fx:id="amountField" GridPane.rowIndex="4" GridPane.columnIndex="1" promptText="Введите сумму" />
     </GridPane>
 
     <!-- Кнопки действий -->

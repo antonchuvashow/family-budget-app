@@ -55,6 +55,23 @@ public class IncomeCategoryDAO implements CategoryDAO {
         return null;
     }
 
+    public IncomeCategory get(String categoryName) throws SQLException {
+        String query = "SELECT * FROM CATEGORY WHERE name = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, categoryName);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return new IncomeCategory(
+                        resultSet.getInt("category_id"),
+                        resultSet.getString("name")
+                );
+            }
+        }
+        return null;
+    }
+
     public List<GeneralCategory> getAll() throws SQLException {
         String query = "SELECT * FROM CATEGORY";
         List<GeneralCategory> categories = new ArrayList<>();

@@ -7,7 +7,6 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -15,6 +14,9 @@ import java.util.List;
 import static antonchuvashov.familybudget.LoginApp.showError;
 
 public class TransactionEditorController {
+
+    @FXML
+    public ComboBox<String> typeComboBox; // Для выбора типа транзакции (Доходы/Расходы)
 
     @FXML
     private DatePicker datePicker;
@@ -35,13 +37,19 @@ public class TransactionEditorController {
     private Button cancelButton;
 
     private TransactionRecord transaction; // текущая редактируемая транзакция
-    private boolean isIncome; // флаг для типа транзакции
 
     public void initialize() {
-        // Настройка интерфейса
-        categoryComboBox.getItems().add("Выберите категорию");
-        userComboBox.getItems().add("Выберите пользователя");
-        amountField.setPromptText("Введите сумму");
+        // Инициализация ComboBox для выбора типа транзакции
+        typeComboBox.getItems().addAll("Доходы", "Расходы");
+        typeComboBox.setValue("Доходы"); // Устанавливаем "Доходы" по умолчанию
+
+        // Обработчик изменения типа транзакции
+        typeComboBox.setOnAction(event -> {
+            loadCategories();
+        });
+
+        // Загрузка пользователей
+        loadUsers();
     }
 
     public void setContext(TransactionRecord transaction) {
@@ -49,24 +57,26 @@ public class TransactionEditorController {
 
         if (transaction != null) {
             // Инициализация данных для редактирования
-            this.isIncome = transaction.getClass().equals(Income.class);
+            typeComboBox.setValue(transaction instanceof Income ? "Доходы" : "Расходы");
             datePicker.setValue(transaction.getDate());
-            categoryComboBox.setValue(transaction.getName());
+            categoryComboBox.setValue(transaction.getCategory().getName());
             userComboBox.setValue(transaction.getUser());
             amountField.setText(transaction.getAmount().toString());
         }
 
-        // Загрузка категорий и пользователей
         loadCategories();
-        loadUsers();
     }
 
     private void loadCategories() {
         try {
-            List<GeneralCategory> categories = isIncome
-                    ? IncomeCategoryDAO.getInstance().getAll()
-                    : ExpenseCategoryDAO.getInstance().getAll();
+            List<GeneralCategory> categories;
+            if ("Доходы".equals(typeComboBox.getValue())) {
+                categories = IncomeCategoryDAO.getInstance().getAll();
+            } else {
+                categories = ExpenseCategoryDAO.getInstance().getAll();
+            }
 
+            categoryComboBox.getItems().clear();
             for (GeneralCategory category : categories) {
                 categoryComboBox.getItems().add(category.getName());
             }
@@ -78,6 +88,7 @@ public class TransactionEditorController {
     private void loadUsers() {
         try {
             List<User> users = UserDAO.getAll();
+            userComboBox.getItems().clear();
             for (User user : users) {
                 userComboBox.getItems().add(user.getUsername());
             }
@@ -92,38 +103,68 @@ public class TransactionEditorController {
             // Проверка и извлечение данных
             String category = categoryComboBox.getValue();
             String user = userComboBox.getValue();
-            BigDecimal amount = new BigDecimal(amountField.getText());
+            String type = typeComboBox.getValue();
+            BigDecimal amount;
             LocalDate date = datePicker.getValue();
 
-            if (category == null || user == null || amount == null || date == null) {
+            if (category == null || user == null || type == null || date == null || amountField.getText().isEmpty()) {
                 showError("Заполните все поля.");
                 return;
             }
-            isIncome = amount.compareTo(BigDecimal.ZERO) > 0;
 
+            try {
+                amount = new BigDecimal(amountField.getText());
+            } catch (NumberFormatException e) {
+                showError("Некорректный формат суммы.");
+                return;
+            }
+
+            boolean isIncome = "Доходы".equals(type);
+
+            // Логика создания или обновления транзакции
             if (transaction == null) {
-                // Создание новой транзакции
-                // TODO: Переделать классы Income и Expense, сделать нормально, а не вот это вот...
+                // Новая транзакция
                 if (isIncome) {
-                    IncomeDAO.add(new Income(0, user, amount, date, 0, category));
+                    IncomeDAO.add(new Income(0, user, amount, date, IncomeCategoryDAO.getInstance().get(category)));
                 } else {
-                    ExpenseDAO.add(new Expense(0, user, amount, date, 0, category));
+                    ExpenseDAO.add(new Expense(0, user, amount, date, ExpenseCategoryDAO.getInstance().get(category)));
                 }
             } else {
                 // Обновление существующей транзакции
+                boolean isTransactionIncome = transaction instanceof Income;
+
+                // Обновляем общие поля
                 transaction.setAmount(amount);
                 transaction.setUser(user);
                 transaction.setDate(date);
-                if (isIncome) {
-                    IncomeDAO.update((Income) transaction);
+                transaction.setCategory(isIncome
+                        ? IncomeCategoryDAO.getInstance().get(category)
+                        : ExpenseCategoryDAO.getInstance().get(category));
+
+                if (isTransactionIncome == isIncome) {
+                    // Тип транзакции не изменился
+                    if (isIncome) {
+                        IncomeDAO.update((Income) transaction);
+                    } else {
+                        ExpenseDAO.update((Expense) transaction);
+                    }
                 } else {
-                    ExpenseDAO.update((Expense) transaction);
+                    // Тип транзакции изменился
+                    if (isTransactionIncome) {
+                        // Удаляем доход, создаём расход
+                        IncomeDAO.delete(transaction.getId());
+                        ExpenseDAO.add(new Expense(0, user, amount, date, ExpenseCategoryDAO.getInstance().get(category)));
+                    } else {
+                        // Удаляем расход, создаём доход
+                        ExpenseDAO.delete(transaction.getId());
+                        IncomeDAO.add(new Income(0, user, amount, date, IncomeCategoryDAO.getInstance().get(category)));
+                    }
                 }
             }
 
-            // Закрываем окно
             close();
         } catch (SQLException e) {
+            e.printStackTrace();
             showError("Не удалось сохранить изменения.\n\n" + e.getMessage());
         } catch (NumberFormatException e) {
             showError("Некорректный формат суммы.");

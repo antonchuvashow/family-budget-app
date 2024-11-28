@@ -4,16 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ab42291d-034f-472c-b140-930920feccbb" name="Changes" comment="add colored income and expense">
-      <change afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/TransactionEditorController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/antonchuvashov/familybudget/transaction_editor.fxml" afterDir="false" />
+    <list default="true" id="ab42291d-034f-472c-b140-930920feccbb" name="Changes" comment="add CRUD form for transactions">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/daopost/ExpenseCategoryDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/daopost/ExpenseCategoryDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/daopost/ExpenseDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/daopost/ExpenseDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/daopost/IncomeCategoryDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/daopost/IncomeCategoryDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/daopost/IncomeDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/daopost/IncomeDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/LoginController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/MainController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/TransactionEditorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/TransactionEditorController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/Expense.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/Expense.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/Income.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/Income.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/TransactionRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/TransactionRecord.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/antonchuvashov/familybudget/main_window.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/antonchuvashov/familybudget/main_window.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/antonchuvashov/familybudget/transaction_editor.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/antonchuvashov/familybudget/transaction_editor.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -150,6 +153,7 @@
       <workItem from="1732431204031" duration="5518000" />
       <workItem from="1732437739894" duration="3911000" />
       <workItem from="1732614330910" duration="8645000" />
+      <workItem from="1732803507531" duration="7368000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -199,7 +203,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732633241634</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="add CRUD form for transactions">
+      <option name="closed" value="true" />
+      <created>1732635691527</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1732635691527</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -224,6 +236,7 @@
     <MESSAGE value="refactor code and add category editor" />
     <MESSAGE value="fix category display" />
     <MESSAGE value="add colored income and expense" />
-    <option name="LAST_COMMIT_MESSAGE" value="add colored income and expense" />
+    <MESSAGE value="add CRUD form for transactions" />
+    <option name="LAST_COMMIT_MESSAGE" value="add CRUD form for transactions" />
   </component>
 </project>

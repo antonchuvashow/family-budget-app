@@ -45,6 +45,23 @@ public class ExpenseCategoryDAO implements CategoryDAO{
         return null;
     }
 
+    public ExpenseCategory get(String entryName) throws SQLException {
+        String query = "SELECT * FROM ENTRY WHERE name = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, entryName);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return new ExpenseCategory(
+                        resultSet.getInt("entry_id"),
+                        resultSet.getString("name")
+                );
+            }
+        }
+        return null;
+    }
+
     public List<GeneralCategory> getAll() throws SQLException {
         String query = "SELECT * FROM ENTRY";
         List<GeneralCategory> entries = new ArrayList<>();
