@@ -33,8 +33,7 @@ public class UserDAO {
                         resultSet.getString("username"),
                         resultSet.getString("password"),
                         resultSet.getString("full_name"),
-                        resultSet.getDate("birth_date"),
-                        resultSet.getBigDecimal("sum")
+                        resultSet.getDate("birth_date")
                 );
             } else {
                 return null;
@@ -53,8 +52,7 @@ public class UserDAO {
                         resultSet.getString("username"),
                         resultSet.getString("password"),
                         resultSet.getString("full_name"),
-                        resultSet.getDate("birth_date"),
-                        resultSet.getBigDecimal("sum")
+                        resultSet.getDate("birth_date")
                 ));
             }
         }

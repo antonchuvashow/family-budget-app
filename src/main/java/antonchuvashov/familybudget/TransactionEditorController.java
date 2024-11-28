@@ -89,9 +89,11 @@ public class TransactionEditorController {
         try {
             List<User> users = UserDAO.getAll();
             userComboBox.getItems().clear();
+            userComboBox.setDisable(!AuthenticationState.getInstance().isAdmin());
             for (User user : users) {
                 userComboBox.getItems().add(user.getUsername());
             }
+            userComboBox.setValue(AuthenticationState.getInstance().getUsername());
         } catch (SQLException e) {
             showError("Не удалось загрузить пользователей.\n\n" + e.getMessage());
         }

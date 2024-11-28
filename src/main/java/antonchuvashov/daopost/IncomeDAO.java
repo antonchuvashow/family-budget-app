@@ -63,7 +63,7 @@ public class IncomeDAO {
         while (result.next()) {
             incomes.add(new Income(
                     result.getInt("income_id"),
-                    result.getString("full_name"),
+                    result.getString("user_id"),
                     result.getBigDecimal("amount"),
                     result.getDate("operation_date").toLocalDate(),
                     new IncomeCategory(result.getInt("category_id"),
@@ -75,13 +75,13 @@ public class IncomeDAO {
 
     private static PreparedStatement getPreparedStatement(String categoryFilter, String personFilter) throws SQLException {
         Connection connection = DBConnection.getConnection();
-        String query = "SELECT i.income_id, i.amount, c.name AS category, c.category_id, i.operation_date, u.full_name " +
+        String query = "SELECT i.income_id, i.amount, c.name, i.user_id, c.category_id, c.name AS category, i.operation_date, u.full_name " +
                 "FROM income i " +
                 "JOIN category c ON i.category_id = c.category_id " +
                 "JOIN users u ON i.user_id = u.username " +
                 "WHERE i.operation_date BETWEEN ? AND ? " +
                 (categoryFilter != null ? "AND c.name = ? " : "") +
-                (personFilter != null ? "AND u.full_name = ? " : "");
+                (personFilter != null ? "AND i.user_id = ? " : "");
         return connection.prepareStatement(query);
     }
 }

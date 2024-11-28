@@ -4,7 +4,6 @@ import antonchuvashov.daopost.*;
 import antonchuvashov.model.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
@@ -14,6 +13,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
@@ -23,6 +23,18 @@ public class MainController {
 
     @FXML
     public ComboBox<String> userComboBox;
+
+    @FXML
+    public Label averageIncomeLabel;
+
+    @FXML
+    public Label averageExpenseLabel;
+
+    @FXML
+    public Label totalBalanceLabel;
+
+    @FXML
+    public MenuItem userManagerHandler;
 
     @FXML
     private TableView<TransactionRecord> transactionTable;
@@ -59,11 +71,17 @@ public class MainController {
         // Устанавливаем текущий месяц по умолчанию
         startDatePicker.setValue(LocalDate.now().withDayOfMonth(1));
         endDatePicker.setValue(LocalDate.now());
+
+        userManagerHandler.setDisable(!AuthenticationState.getInstance().isAdmin());
+        refreshComboBoxes();
+        setupTransactionTable();
+        refreshData();
+    }
+
+    private void refreshComboBoxes() {
         loadCategories(IncomeCategoryDAO.getInstance(), categoryComboBox);
         loadCategories(ExpenseCategoryDAO.getInstance(), entryComboBox);
         loadUsers();
-        setupTransactionTable();
-        refreshData();
     }
 
     private void setupTransactionTable() {
@@ -108,6 +126,7 @@ public class MainController {
     // Загрузка категорий в ComboBox
     private void loadCategories(CategoryDAO dao, ComboBox<String> comboBox) {
         List<GeneralCategory> categories;
+        comboBox.getItems().clear();
         try {
             categories = dao.getAll();
             comboBox.getItems().add("Все");
@@ -123,6 +142,8 @@ public class MainController {
     // Загрузка пользователей
     private void loadUsers() {
         List<User> users;
+        userComboBox.getItems().clear();
+        userComboBox.getItems().add("Все");
         try {
             users = UserDAO.getAll();
             for (User user : users) {
@@ -131,36 +152,55 @@ public class MainController {
         } catch (SQLException e) {
             LoginApp.showError("Не удалось получить ползователей.\n\n" + e.getMessage());
         }
+
+        userComboBox.setDisable(!AuthenticationState.getInstance().isAdmin());
         userComboBox.setValue(AuthenticationState.getInstance().getUsername());
     }
 
     // Обработчики кнопок для добавления и просмотра
     @FXML
     private void handleAddIncomeCategory() {
-        openEditorWindow(IncomeCategoryDAO.getInstance());
+        openCategoryEditorWindow(IncomeCategoryDAO.getInstance());
     }
 
     @FXML
     private void handleAddExpenseCategory() {
-        openEditorWindow(ExpenseCategoryDAO.getInstance());
+        openCategoryEditorWindow(ExpenseCategoryDAO.getInstance());
     }
 
-    private void openEditorWindow(CategoryDAO dao) {
+    @FXML
+    private void handleUserManager() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Editor.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("user_manager.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Управление пользователям");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(loader.load()));
+
+            stage.showAndWait();
+        } catch (IOException e) {
+            LoginApp.showError("Не удалось открыть окно редактора.\n\n" + e.getMessage());
+        }
+        refreshComboBoxes();
+    }
+
+    private void openCategoryEditorWindow(CategoryDAO dao) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("category_editor.fxml"));
             Stage stage = new Stage();
             stage.setTitle("Редактор категорий");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(loader.load()));
 
             // Передаём контекст в контроллер
-            EditorController controller = loader.getController();
+            CategoryEditorController controller = loader.getController();
             controller.setContext("Редактор категорий", dao);
 
             stage.showAndWait();
         } catch (IOException e) {
             LoginApp.showError("Не удалось открыть окно редактора.\n\n" + e.getMessage());
         }
+        refreshComboBoxes();
     }
 
     // Обновление данных в таблице
@@ -181,9 +221,12 @@ public class MainController {
             return;
         }
 
+        // количество дней в выбранном периоде
+        long daysInPeriod = java.time.temporal.ChronoUnit.DAYS.between(startDate, endDate.plusDays(1));
+
         String categoryFilter = categoryComboBox.getValue().equals("Все") ? null : categoryComboBox.getValue();
         String entryFilter = entryComboBox.getValue().equals("Все") ? null : entryComboBox.getValue();
-        String personFilter = userComboBox.getValue();
+        String personFilter = userComboBox.getValue().equals("Все") ? null : userComboBox.getValue();
 
         // Загрузка данных
         List<TransactionRecord> transactions = new ArrayList<>();
@@ -211,8 +254,15 @@ public class MainController {
             totalExpense = totalExpense.add(Expense.class.equals(transaction.getClass()) ? transaction.getAmount() : BigDecimal.ZERO);
         }
 
+        BigDecimal averageIncome = daysInPeriod > 0 ? totalIncome.divide(BigDecimal.valueOf(daysInPeriod), 2, RoundingMode.HALF_UP) : BigDecimal.ZERO;
+        BigDecimal averageExpense = daysInPeriod > 0 ? totalExpense.divide(BigDecimal.valueOf(daysInPeriod), 2, RoundingMode.HALF_UP) : BigDecimal.ZERO;
+        BigDecimal totalBalance = totalIncome.subtract(totalExpense);
+
         totalIncomeLabel.setText(String.format("%.2f", totalIncome));
         totalExpenseLabel.setText(String.format("%.2f", totalExpense));
+        averageIncomeLabel.setText(String.format("%.2f", averageIncome));
+        averageExpenseLabel.setText(String.format("%.2f", averageExpense));
+        totalBalanceLabel.setText(String.format("%.2f", totalBalance));
     }
 
     @FXML
@@ -239,18 +289,24 @@ public class MainController {
             LoginApp.showError("Выберите транзакцию для удаления.");
             return;
         }
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmation.setTitle("Подтверждение удаления");
+        confirmation.setHeaderText(null);
+        confirmation.setContentText("Вы уверены, что хотите удалить транзакцию ?");
 
-        try {
-            if (Income.class.equals(selected.getClass())) {
-                IncomeDAO.delete(selected.getId());
-            } else {
-                System.out.println(selected.getId());
-                ExpenseDAO.delete(selected.getId());
+        Optional<ButtonType> result = confirmation.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                if (Income.class.equals(selected.getClass())) {
+                    IncomeDAO.delete(selected.getId());
+                } else {
+                    ExpenseDAO.delete(selected.getId());
+                }
+                transactionTable.getItems().remove(selected);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                LoginApp.showError("Не удалось удалить транзакцию.\n\n" + e.getMessage());
             }
-            transactionTable.getItems().remove(selected);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            LoginApp.showError("Не удалось удалить транзакцию.\n\n" + e.getMessage());
         }
         refreshData();
     }

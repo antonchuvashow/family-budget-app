@@ -4,20 +4,23 @@ import antonchuvashov.daopost.CategoryDAO;
 import antonchuvashov.model.GeneralCategory;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import static antonchuvashov.familybudget.LoginApp.showError;
 
-public class EditorController {
-
+public class CategoryEditorController {
+    @FXML
+    public Button deleteHandler;
+    @FXML
+    public Button editHandler;
     @FXML
     private Label titleLabel;
 
     @FXML
-    private TableView<GeneralCategory> entryTable;
+    private TableView<GeneralCategory> generalCategoryTableView;
 
     @FXML
     private TableColumn<GeneralCategory, String> nameColumn;
@@ -26,6 +29,8 @@ public class EditorController {
 
     public void initialize() {
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+        deleteHandler.setDisable(!AuthenticationState.getInstance().isAdmin());
+        editHandler.setDisable(!AuthenticationState.getInstance().isAdmin());
     }
 
     public void setContext(String title, CategoryDAO dao) {
@@ -37,7 +42,7 @@ public class EditorController {
     private void loadEntries() {
         try {
             List<GeneralCategory> entries = dao.getAll();
-            entryTable.getItems().setAll(entries);
+            generalCategoryTableView.getItems().setAll(entries);
         } catch (SQLException e) {
             showError("Не удалось загрузить данные.");
         }
@@ -62,7 +67,7 @@ public class EditorController {
 
     @FXML
     private void handleEdit() {
-        GeneralCategory category = entryTable.getSelectionModel().getSelectedItem();
+        GeneralCategory category = generalCategoryTableView.getSelectionModel().getSelectedItem();
         if (category == null) {
             showError("Выберите статью для изменения.");
             return;
@@ -85,23 +90,24 @@ public class EditorController {
 
     @FXML
     private void handleDelete() {
-        GeneralCategory selectedExpenseCategory = entryTable.getSelectionModel().getSelectedItem();
-        if (selectedExpenseCategory == null) {
+        GeneralCategory category = generalCategoryTableView.getSelectionModel().getSelectedItem();
+        if (category == null) {
             showError("Выберите статью для удаления.");
             return;
         }
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmation.setTitle("Подтверждение удаления");
+        confirmation.setHeaderText(null);
+        confirmation.setContentText("Вы уверены, что хотите удалить " + category.getName() + "?");
 
-        try {
-            dao.delete(selectedExpenseCategory.getId());
-            loadEntries();
-        } catch (SQLException e) {
-            showError("Не удалось удалить статью.");
+        Optional<ButtonType> result = confirmation.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                dao.delete(category.getId());
+                loadEntries();
+            } catch (SQLException e) {
+                showError("Не удалось удалить статью.\n\n" + e.getMessage());
+            }
         }
-    }
-
-    @FXML
-    private void handleClose() {
-        Stage stage = (Stage) entryTable.getScene().getWindow();
-        stage.close();
     }
 }

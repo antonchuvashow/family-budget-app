@@ -42,7 +42,7 @@ public class ExpenseDAO {
         while (result.next()) {
             expenses.add(new Expense(
                     result.getInt("expense_id"),
-                    result.getString("full_name"),
+                    result.getString("user_id"),
                     result.getBigDecimal("amount"),
                     result.getDate("operation_date").toLocalDate(),
                     new ExpenseCategory(result.getInt("entry_id"),
@@ -54,13 +54,13 @@ public class ExpenseDAO {
 
     private static PreparedStatement getPreparedStatement(String entryFilter, String personFilter) throws SQLException {
         Connection connection = DBConnection.getConnection();
-        String query = "SELECT ex.expense_id, ex.amount, e.name AS entry,  e.entry_id, ex.operation_date, u.full_name " +
+        String query = "SELECT ex.user_id, ex.expense_id, ex.amount, e.name AS entry, e.entry_id, ex.operation_date, u.full_name " +
                 "FROM expense ex " +
                 "JOIN entry e ON ex.entry_id = e.entry_id " +
                 "JOIN users u ON ex.user_id = u.username " +
                 "WHERE ex.operation_date BETWEEN ? AND ? " +
                 (entryFilter != null ? "AND e.name = ? " : "") +
-                (personFilter != null ? "AND u.full_name = ? " : "");
+                (personFilter != null ? "AND ex.user_id = ? " : "");
         return connection.prepareStatement(query);
     }
 

@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="antonchuvashov.familybudget.MainController">
+<BorderPane xmlns="http://javafx.com/fxml/1" xmlns:fx="http://javafx.com/javafx/17.0.2-ea" fx:controller="antonchuvashov.familybudget.MainController">
     <!-- Верхнее меню -->
     <top>
         <MenuBar>
@@ -13,6 +13,7 @@
             <Menu text="Действия">
                 <MenuItem onAction="#handleAddIncomeCategory" text="Добавить категорию доходов" />
                 <MenuItem onAction="#handleAddExpenseCategory" text="Добавить статью расходов" />
+                <MenuItem fx:id="userManagerHandler" onAction="#handleUserManager" text="Управление пользователями" />
             </Menu>
         </MenuBar>
     </top>
@@ -48,16 +49,27 @@
             </HBox>
 
             <!-- Сводная информация -->
-            <HBox alignment="CENTER" spacing="40">
-                <Label text="Доход:" />
-                <Label fx:id="totalIncomeLabel" style="-fx-font-size: 14px; -fx-text-fill: green;" text="0.00" />
-                <Label text="Расход:" />
-                <Label fx:id="totalExpenseLabel" style="-fx-font-size: 14px; -fx-text-fill: crimson;" text="0.00" />
-            </HBox>
+            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 10;">
+                <HBox alignment="CENTER" spacing="40">
+                    <Label text="Доход:" />
+                    <Label fx:id="totalIncomeLabel" style="-fx-font-size: 14px; -fx-text-fill: green;" text="0.00" />
+                    <Label text="Расход:" />
+                    <Label fx:id="totalExpenseLabel" style="-fx-font-size: 14px; -fx-text-fill: crimson;" text="0.00" />
+                    <Label text="Итог:" />
+                    <Label fx:id="totalBalanceLabel" style="-fx-font-size: 14px; -fx-text-fill: black;" text="0.00" />
+                </HBox>
+
+                <HBox alignment="CENTER" spacing="40">
+                    <Label text="Ср. доход в день:" />
+                    <Label fx:id="averageIncomeLabel" style="-fx-font-size: 14px; -fx-text-fill: green;" text="0.00" />
+                    <Label text="Ср. расход в день:" />
+                    <Label fx:id="averageExpenseLabel" style="-fx-font-size: 14px; -fx-text-fill: crimson;" text="0.00" />
+                </HBox>
+            </VBox>
 
             <!-- Лента доходов и расходов -->
             <VBox alignment="TOP_CENTER" spacing="10" style="-fx-padding: 10;">
-                <TableView fx:id="transactionTable" style="-fx-background-color: transparent; ">
+                <TableView fx:id="transactionTable" style="-fx-background-color: transparent;">
                     <columns>
                         <TableColumn fx:id="dateColumn" text="Дата" />
                         <TableColumn fx:id="categoryColumn" text="Категория" />
