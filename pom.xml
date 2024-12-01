@@ -117,7 +117,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>antonchuvashov.familybudget/antonchuvashov.familybudget.LoginApp</mainClass>
+                            <mainClass>antonchuvashov.familybudget/antonchuvashov.familybudget.MainApp</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

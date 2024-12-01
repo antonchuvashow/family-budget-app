@@ -10,7 +10,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
-import static antonchuvashov.familybudget.LoginApp.showError;
+import static antonchuvashov.familybudget.MainApp.showError;
 
 public class UserEditorController {
 

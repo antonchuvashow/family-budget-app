@@ -1,6 +1,6 @@
 package antonchuvashov.utils;
 
-import antonchuvashov.familybudget.LoginApp;
+import antonchuvashov.familybudget.MainApp;
 import antonchuvashov.model.TransactionRecord;
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -23,7 +23,7 @@ import javax.imageio.ImageIO;
 public class PDFReportGenerator {
 
     public static void generateReportWithChart(List<TransactionRecord> transactions, BigDecimal totalIncome, BigDecimal totalExpense, BigDecimal averageIncome, BigDecimal averageExpense) throws IOException {
-        PdfFont font = PdfFontFactory.createFont(Objects.requireNonNull(LoginApp.class.getResource("times_new_roman.ttf")).getPath(), PdfEncodings.IDENTITY_H);
+        PdfFont font = PdfFontFactory.createFont(Objects.requireNonNull(MainApp.class.getResource("times_new_roman.ttf")).getPath(), PdfEncodings.IDENTITY_H);
 
         // Создаем документ PDF
         File file = new File("./financial_report.pdf");

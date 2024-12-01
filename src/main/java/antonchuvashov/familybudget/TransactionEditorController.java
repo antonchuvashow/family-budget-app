@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static antonchuvashov.familybudget.LoginApp.showError;
+import static antonchuvashov.familybudget.MainApp.showError;
 
 public class TransactionEditorController {
 

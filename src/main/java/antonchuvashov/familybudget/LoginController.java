@@ -51,10 +51,10 @@ public class LoginController {
                     Stage loginStage = (Stage) usernameField.getScene().getWindow();
 
                     // Открытие главного окна
-                    FXMLLoader loader = new FXMLLoader(LoginApp.class.getResource("main_window.fxml"));
+                    FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("main_window.fxml"));
                     Parent root = loader.load();
                     Stage stage = new Stage();
-                    LoginApp.setIcon(stage);
+                    MainApp.setIcon(stage);
 
                     stage.setScene(new Scene(root, 400, 400));
                     stage.setMinWidth(800);
@@ -78,7 +78,7 @@ public class LoginController {
     @FXML
     private void openSettingsWindow() throws IOException {
         // Открытие окна настроек
-        FXMLLoader fxmlLoader = new FXMLLoader(LoginApp.class.getResource("settings_window.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("settings_window.fxml"));
         Parent root = fxmlLoader.load();
         Stage stage = new Stage();
 

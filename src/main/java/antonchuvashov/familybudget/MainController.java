@@ -133,7 +133,7 @@ public class MainController {
                 comboBox.getItems().add(category.getName());
             }
         } catch (SQLException e) {
-            LoginApp.showError("Не удалось получить катеогрии.\n\n" + e.getMessage());
+            MainApp.showError("Не удалось получить катеогрии.\n\n" + e.getMessage());
         }
         comboBox.setValue("Все");
     }
@@ -149,7 +149,7 @@ public class MainController {
                 userComboBox.getItems().add(user.getUsername());
             }
         } catch (SQLException e) {
-            LoginApp.showError("Не удалось получить ползователей.\n\n" + e.getMessage());
+            MainApp.showError("Не удалось получить ползователей.\n\n" + e.getMessage());
         }
 
         userComboBox.setDisable(!AuthenticationState.getInstance().isAdmin());
@@ -178,7 +178,7 @@ public class MainController {
 
             stage.showAndWait();
         } catch (IOException e) {
-            LoginApp.showError("Не удалось открыть окно редактора.\n\n" + e.getMessage());
+            MainApp.showError("Не удалось открыть окно редактора.\n\n" + e.getMessage());
         }
         refreshComboBoxes();
     }
@@ -197,7 +197,7 @@ public class MainController {
 
             stage.showAndWait();
         } catch (IOException e) {
-            LoginApp.showError("Не удалось открыть окно редактора.\n\n" + e.getMessage());
+            MainApp.showError("Не удалось открыть окно редактора.\n\n" + e.getMessage());
         }
         refreshComboBoxes();
     }
@@ -227,13 +227,13 @@ public class MainController {
         try {
             transactions.addAll(IncomeDAO.fetch(startDate, endDate, categoryFilter, personFilter));
         } catch (SQLException e) {
-            LoginApp.showError("Не удалось получить доходы из базы данных.\n\n" + e.getMessage());
+            MainApp.showError("Не удалось получить доходы из базы данных.\n\n" + e.getMessage());
         }
 
         try {
             transactions.addAll(ExpenseDAO.fetch(startDate, endDate, entryFilter, personFilter));
         } catch (SQLException e) {
-            LoginApp.showError("Не удалось получить расходы из базы данных.\n\n" + e.getMessage());
+            MainApp.showError("Не удалось получить расходы из базы данных.\n\n" + e.getMessage());
         }
         // Сортировка по дате
         transactions.sort(Comparator.comparing(TransactionRecord::getDate));
@@ -250,7 +250,7 @@ public class MainController {
     private void handleEditTransaction() {
         TransactionRecord selected = transactionTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            LoginApp.showError("Выберите транзакцию для редактирования.");
+            MainApp.showError("Выберите транзакцию для редактирования.");
             return;
         }
         openTransactionEditor(selected); // Передаём выбранную транзакцию для редактирования
@@ -261,7 +261,7 @@ public class MainController {
     private void handleDeleteTransaction() {
         TransactionRecord selected = transactionTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            LoginApp.showError("Выберите транзакцию для удаления.");
+            MainApp.showError("Выберите транзакцию для удаления.");
             return;
         }
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
@@ -280,7 +280,7 @@ public class MainController {
                 transactionTable.getItems().remove(selected);
             } catch (SQLException e) {
                 e.printStackTrace();
-                LoginApp.showError("Не удалось удалить транзакцию.\n\n" + e.getMessage());
+                MainApp.showError("Не удалось удалить транзакцию.\n\n" + e.getMessage());
             }
         }
         refreshData();
@@ -299,7 +299,7 @@ public class MainController {
 
             stage.showAndWait();
         } catch (IOException e) {
-            LoginApp.showError("Не удалось открыть редактор транзакций.\n\n" + e.getMessage());
+            MainApp.showError("Не удалось открыть редактор транзакций.\n\n" + e.getMessage());
         }
     }
 
@@ -320,7 +320,7 @@ public class MainController {
                     tranStats.stats().averageIncome(), tranStats.stats().averageExpense());
 
         } catch (IOException e) {
-            LoginApp.showError("Не удалось сгенерировать отчет!\n\n" + e.getMessage());
+            MainApp.showError("Не удалось сгенерировать отчет!\n\n" + e.getMessage());
         }
     }
 
@@ -329,7 +329,7 @@ public class MainController {
         LocalDate endDate = endDatePicker.getValue();
 
         if (startDate == null || endDate == null) {
-            LoginApp.showError("Пожалуйста, выберите временной промежуток.");
+            MainApp.showError("Пожалуйста, выберите временной промежуток.");
             return null;
         }
 

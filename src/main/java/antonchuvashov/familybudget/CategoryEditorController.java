@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import static antonchuvashov.familybudget.LoginApp.showError;
+import static antonchuvashov.familybudget.MainApp.showError;
 
 public class CategoryEditorController {
     @FXML

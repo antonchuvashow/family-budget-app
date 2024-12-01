@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Objects;
 
-public class LoginApp extends Application {
+public class MainApp extends Application {
 
     public static void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -34,7 +34,7 @@ public class LoginApp extends Application {
 
         setIcon(stage);
 
-        FXMLLoader fxmlLoader = new FXMLLoader(LoginApp.class.getResource("login_window.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("login_window.fxml"));
         stage.setTitle("Вход");
         stage.setScene(new Scene(fxmlLoader.load(), 300, 350));
         stage.setMinWidth(300);
@@ -46,7 +46,7 @@ public class LoginApp extends Application {
     }
 
     public static void setIcon(Stage stage) {
-        Image icon = new Image(Objects.requireNonNull(LoginApp.class.getResourceAsStream("icon.png")));
+        Image icon = new Image(Objects.requireNonNull(MainApp.class.getResourceAsStream("icon.png")));
         stage.getIcons().add(icon);
     }
 
