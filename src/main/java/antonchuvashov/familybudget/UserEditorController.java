@@ -1,6 +1,7 @@
 package antonchuvashov.familybudget;
 
 import antonchuvashov.model.User;
+import antonchuvashov.utils.PasswordUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -47,7 +48,6 @@ public class UserEditorController {
             titleLabel.setText("Редактирование пользователя");
             usernameField.setText(user.getUsername());
             usernameField.setDisable(true); // Имя пользователя нельзя изменить
-            passwordField.setText(user.getPassword());
             fullNameField.setText(user.getFullName());
             birthdayPicker.setValue(LocalDate.ofInstant(user.getBirthday().toInstant(), ZoneId.systemDefault()));
         } else {
@@ -62,22 +62,22 @@ public class UserEditorController {
         try {
             // Проверка и извлечение данных
             String username = usernameField.getText();
-            String password = passwordField.getText();
+            String passwordHash = PasswordUtils.hashPassword(passwordField.getText());
             String fullName = fullNameField.getText();
             LocalDate birthday = birthdayPicker.getValue();
 
-            if (username.isEmpty() || password.isEmpty() || fullName.isEmpty() || birthday == null) {
+            if (username.isEmpty() || passwordHash.isEmpty() || fullName.isEmpty() || birthday == null) {
                 showError("Все поля должны быть заполнены.");
                 return;
             }
 
             // Создаём/обновляем объект пользователя
             if (isEditMode) {
-                user.setPassword(password);
+                user.setPasswordHash(passwordHash);
                 user.setFullName(fullName);
                 user.setBirthday(Date.valueOf(birthday));
             } else {
-                user = new User(username, password, fullName, Date.valueOf(birthday));
+                user = new User(username, passwordHash, fullName, Date.valueOf(birthday));
             }
 
             // Закрываем окно, возвращаем пользователя

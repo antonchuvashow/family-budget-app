@@ -1,6 +1,5 @@
 package antonchuvashov.daopost;
 
-import antonchuvashov.familybudget.AuthenticationState;
 import antonchuvashov.model.ExpenseCategory;
 import antonchuvashov.model.GeneralCategory;
 
@@ -28,11 +27,11 @@ public class ExpenseCategoryDAO implements CategoryDAO{
         }
     }
 
-    public ExpenseCategory get(int entryId) throws SQLException {
+    public ExpenseCategory get(int id) throws SQLException {
         String query = "SELECT * FROM ENTRY WHERE entry_id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setInt(1, entryId);
+            preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {

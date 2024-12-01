@@ -2,7 +2,6 @@ package antonchuvashov.daopost;
 
 import antonchuvashov.model.Expense;
 import antonchuvashov.model.ExpenseCategory;
-import antonchuvashov.model.Income;
 import antonchuvashov.model.TransactionRecord;
 
 import java.sql.*;
@@ -64,11 +63,11 @@ public class ExpenseDAO {
         return connection.prepareStatement(query);
     }
 
-    public static void delete(int entry_id) throws SQLException {
+    public static void delete(int entryId) throws SQLException {
         String query = "DELETE FROM EXPENSE WHERE expense_id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setInt(1, entry_id);
+            preparedStatement.setInt(1, entryId);
             preparedStatement.executeUpdate();
         }
     }

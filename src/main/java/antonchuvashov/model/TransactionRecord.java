@@ -30,4 +30,6 @@ public interface TransactionRecord {
     void setDate(LocalDate date);
 
     void setCategory(GeneralCategory category);
+
+    public String getSignedAmount();
 }

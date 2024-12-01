@@ -73,6 +73,11 @@ public class Income implements TransactionRecord {
     }
 
     @Override
+    public String getSignedAmount() {
+        return String.format("+%.2f", amount.getValue());
+    }
+
+    @Override
     public BigDecimal getAmount() {
         return amount.getValue();
     }

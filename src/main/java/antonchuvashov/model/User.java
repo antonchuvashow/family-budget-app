@@ -9,14 +9,14 @@ import java.util.Date;
 
 public class User {
     private SimpleStringProperty username;
-    private String password;
+    private String passwordHash;
     private SimpleStringProperty fullName;
     private SimpleObjectProperty<Date> birthday;
     private BigDecimal sum = BigDecimal.ZERO;
 
-    public User(String username, String password, String fullName, Date birthday) {
+    public User(String username, String passwordHash, String fullName, Date birthday) {
         this.username = new SimpleStringProperty(username);
-        this.password = password;
+        this.passwordHash = passwordHash;
         this.fullName = new SimpleStringProperty(fullName);
         this.birthday = new SimpleObjectProperty<>(birthday);
     }
@@ -29,12 +29,12 @@ public class User {
         this.username = new SimpleStringProperty(username);
     }
 
-    public String getPassword() {
-        return password;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPasswordHash(String password) {
+        this.passwordHash = password;
     }
 
     public String getFullName() {

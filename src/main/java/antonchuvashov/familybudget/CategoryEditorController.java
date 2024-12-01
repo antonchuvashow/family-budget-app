@@ -1,6 +1,7 @@
 package antonchuvashov.familybudget;
 
 import antonchuvashov.daopost.CategoryDAO;
+import antonchuvashov.model.AuthenticationState;
 import antonchuvashov.model.GeneralCategory;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;

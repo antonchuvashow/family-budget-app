@@ -68,6 +68,11 @@ public class Expense implements TransactionRecord {
     }
 
     @Override
+    public String getSignedAmount() {
+        return String.format("-%.2f", amount.getValue());
+    }
+
+    @Override
     public int getId() {
         return this.expenseId;
     }

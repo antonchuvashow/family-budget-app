@@ -38,11 +38,11 @@ public class IncomeCategoryDAO implements CategoryDAO {
         }
     }
 
-    public IncomeCategory get(int categoryId) throws SQLException {
+    public IncomeCategory get(int id) throws SQLException {
         String query = "SELECT * FROM CATEGORY WHERE category_id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setInt(1, categoryId);
+            preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
@@ -102,11 +102,11 @@ public class IncomeCategoryDAO implements CategoryDAO {
     }
 
     @Override
-    public void delete(int categoryId) throws SQLException {
+    public void delete(int id) throws SQLException {
         String query = "DELETE FROM CATEGORY WHERE category_id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setInt(1, categoryId);
+            preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         }
     }

@@ -2,6 +2,8 @@ package antonchuvashov.familybudget;
 
 import antonchuvashov.daopost.*;
 import antonchuvashov.model.*;
+import antonchuvashov.utils.PDFReportGenerator;
+import antonchuvashov.utils.Statistics;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -13,7 +15,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
@@ -92,33 +93,31 @@ public class MainController {
         userColumn.setCellValueFactory(cellData -> cellData.getValue().userProperty());
 
         // Кастомное отображение суммы в таблице
-        amountColumn.setCellFactory(column -> {
-            return new TableCell<TransactionRecord, BigDecimal>() {
-                @Override
-                protected void updateItem(BigDecimal item, boolean empty) {
-                    super.updateItem(item, empty);
+        amountColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(BigDecimal item, boolean b) {
+                super.updateItem(item, b);
 
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                    } else {
-                        // Получаем строку, чтобы определить тип транзакции
-                        TransactionRecord record = getTableRow().getItem();
+                if (item == null || b) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    // Получаем строку, чтобы определить тип транзакции
+                    TransactionRecord record = getTableRow().getItem();
 
-                        if (record != null) {
-                            // Отображаем знак "+" для доходов и "-" для расходов
-                            if (record.getClass().equals(Income.class)) {
-                                setText(String.format("+%.2f", item));
-                                setTextFill(Color.DARKGREEN); // Зеленый для доходов
-                            } else if (record.getClass().equals(Expense.class)) {
-                                setText(String.format("-%.2f", item));
-                                setTextFill(Color.CRIMSON); // Красный для расходов
-                            }
-                            setStyle("-fx-alignment: CENTER-RIGHT;");
+                    if (record != null) {
+                        // Отображаем знак "+" для доходов и "-" для расходов
+                        if (record.getClass().equals(Income.class)) {
+                            setText(String.format("+%.2f", item));
+                            setTextFill(Color.DARKGREEN); // Зеленый для доходов
+                        } else if (record.getClass().equals(Expense.class)) {
+                            setText(String.format("-%.2f", item));
+                            setTextFill(Color.CRIMSON); // Красный для расходов
                         }
+                        setStyle("-fx-alignment: CENTER-RIGHT;");
                     }
                 }
-            };
+            }
         });
     }
 
@@ -210,25 +209,20 @@ public class MainController {
     }
 
     private void refreshData() {
-        BigDecimal totalIncome = BigDecimal.ZERO;
-        BigDecimal totalExpense = BigDecimal.ZERO;
+        TransactionStats tranStats = getTransactionStats();
+        if (tranStats == null) return;
 
-        LocalDate startDate = startDatePicker.getValue();
-        LocalDate endDate = endDatePicker.getValue();
+        totalIncomeLabel.setText(String.format("%.2f", tranStats.stats().totalIncome()));
+        totalExpenseLabel.setText(String.format("%.2f", tranStats.stats().totalExpense()));
+        averageIncomeLabel.setText(String.format("%.2f", tranStats.stats().averageIncome()));
+        averageExpenseLabel.setText(String.format("%.2f", tranStats.stats().averageExpense()));
+        totalBalanceLabel.setText(String.format("%.2f", tranStats.stats().totalIncome()
+                .subtract(tranStats.stats().totalExpense())));
+    }
 
-        if (startDate == null || endDate == null) {
-            LoginApp.showError("Пожалуйста, выберите временной промежуток.");
-            return;
-        }
-
-        // количество дней в выбранном периоде
-        long daysInPeriod = java.time.temporal.ChronoUnit.DAYS.between(startDate, endDate.plusDays(1));
-
-        String categoryFilter = categoryComboBox.getValue().equals("Все") ? null : categoryComboBox.getValue();
-        String entryFilter = entryComboBox.getValue().equals("Все") ? null : entryComboBox.getValue();
-        String personFilter = userComboBox.getValue().equals("Все") ? null : userComboBox.getValue();
-
-        // Загрузка данных
+    private static List<TransactionRecord> getTransactionRecords(LocalDate startDate, LocalDate endDate,
+                                                                 String categoryFilter, String personFilter,
+                                                                 String entryFilter) {
         List<TransactionRecord> transactions = new ArrayList<>();
         try {
             transactions.addAll(IncomeDAO.fetch(startDate, endDate, categoryFilter, personFilter));
@@ -241,28 +235,9 @@ public class MainController {
         } catch (SQLException e) {
             LoginApp.showError("Не удалось получить расходы из базы данных.\n\n" + e.getMessage());
         }
-
         // Сортировка по дате
         transactions.sort(Comparator.comparing(TransactionRecord::getDate));
-
-        // Обновляем таблицу
-        transactionTable.getItems().setAll(transactions);
-
-        // Подсчитываем доходы и расходы
-        for (TransactionRecord transaction : transactions) {
-            totalIncome = totalIncome.add(Income.class.equals(transaction.getClass()) ? transaction.getAmount() : BigDecimal.ZERO);
-            totalExpense = totalExpense.add(Expense.class.equals(transaction.getClass()) ? transaction.getAmount() : BigDecimal.ZERO);
-        }
-
-        BigDecimal averageIncome = daysInPeriod > 0 ? totalIncome.divide(BigDecimal.valueOf(daysInPeriod), 2, RoundingMode.HALF_UP) : BigDecimal.ZERO;
-        BigDecimal averageExpense = daysInPeriod > 0 ? totalExpense.divide(BigDecimal.valueOf(daysInPeriod), 2, RoundingMode.HALF_UP) : BigDecimal.ZERO;
-        BigDecimal totalBalance = totalIncome.subtract(totalExpense);
-
-        totalIncomeLabel.setText(String.format("%.2f", totalIncome));
-        totalExpenseLabel.setText(String.format("%.2f", totalExpense));
-        averageIncomeLabel.setText(String.format("%.2f", averageIncome));
-        averageExpenseLabel.setText(String.format("%.2f", averageExpense));
-        totalBalanceLabel.setText(String.format("%.2f", totalBalance));
+        return transactions;
     }
 
     @FXML
@@ -332,5 +307,51 @@ public class MainController {
     @FXML
     private void handleExit() {
         System.exit(0);
+    }
+
+    @FXML
+    public void handleGenerateReport() {
+        TransactionStats tranStats = getTransactionStats();
+        if (tranStats == null) return;
+
+        try {
+            PDFReportGenerator.generateReportWithChart(tranStats.transactions(), tranStats.stats().totalIncome(),
+                    tranStats.stats().totalExpense(),
+                    tranStats.stats().averageIncome(), tranStats.stats().averageExpense());
+
+        } catch (IOException e) {
+            LoginApp.showError("Не удалось сгенерировать отчет!\n\n" + e.getMessage());
+        }
+    }
+
+    private TransactionStats getTransactionStats() {
+        LocalDate startDate = startDatePicker.getValue();
+        LocalDate endDate = endDatePicker.getValue();
+
+        if (startDate == null || endDate == null) {
+            LoginApp.showError("Пожалуйста, выберите временной промежуток.");
+            return null;
+        }
+
+        // количество дней в выбранном периоде
+        long daysInPeriod = java.time.temporal.ChronoUnit.DAYS.between(startDate, endDate.plusDays(1));
+
+        String categoryFilter = categoryComboBox.getValue().equals("Все") ? null : categoryComboBox.getValue();
+        String entryFilter = entryComboBox.getValue().equals("Все") ? null : entryComboBox.getValue();
+        String personFilter = userComboBox.getValue().equals("Все") ? null : userComboBox.getValue();
+
+        // Загрузка данных
+        List<TransactionRecord> transactions = getTransactionRecords(startDate, endDate, categoryFilter,
+                personFilter, entryFilter);
+
+        // Обновляем таблицу
+        transactionTable.getItems().setAll(transactions);
+
+        // Подсчитываем доходы и расходы
+        Statistics.StatsResult stats = Statistics.getStats(transactions, daysInPeriod);
+        return new TransactionStats(transactions, stats);
+    }
+
+    private record TransactionStats(List<TransactionRecord> transactions, Statistics.StatsResult stats) {
     }
 }

@@ -1,4 +1,4 @@
-package antonchuvashov.familybudget;
+package antonchuvashov.model;
 
 public class AuthenticationState {
 

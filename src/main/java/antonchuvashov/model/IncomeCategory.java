@@ -16,8 +16,8 @@ public class IncomeCategory implements GeneralCategory {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int entryId) {
+        this.id = entryId;
     }
 
     public String getName() {

@@ -1,6 +1,7 @@
 package antonchuvashov.familybudget;
 
 import antonchuvashov.daopost.DBConnection;
+import antonchuvashov.daopost.UserDAO;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -8,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class LoginApp extends Application {
 
@@ -22,6 +24,12 @@ public class LoginApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         DBConnection.fromSettings();
+        try {
+            UserDAO.addRootUserIfDoesntExist();
+        } catch (SQLException e) {
+            showError("Ошибка! \n\n" + e.getMessage());
+        }
+
         FXMLLoader fxmlLoader = new FXMLLoader(LoginApp.class.getResource("login_window.fxml"));
         stage.setTitle("Вход");
         stage.setScene(new Scene(fxmlLoader.load(), 300, 350));

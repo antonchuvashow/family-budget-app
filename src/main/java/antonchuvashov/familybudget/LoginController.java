@@ -2,7 +2,9 @@ package antonchuvashov.familybudget;
 
 import antonchuvashov.daopost.DBConnection;
 import antonchuvashov.daopost.UserDAO;
+import antonchuvashov.model.AuthenticationState;
 import antonchuvashov.model.User;
+import antonchuvashov.utils.PasswordUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -91,6 +93,6 @@ public class LoginController {
 
     private boolean checkCredentials(String username, String password) throws SQLException {
         User user = UserDAO.get(username);
-        return user != null && user.getPassword().equals(password);
+        return user != null && PasswordUtils.checkPassword(password, user.getPasswordHash());
     }
 }

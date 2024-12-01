@@ -9,6 +9,7 @@
         <MenuBar>
             <Menu text="Файл">
                 <MenuItem onAction="#handleExit" text="Выход" />
+                <MenuItem onAction="#handleGenerateReport" text="Сгенерировать отчет" />
             </Menu>
             <Menu text="Действия">
                 <MenuItem onAction="#handleAddIncomeCategory" text="Добавить категорию доходов" />

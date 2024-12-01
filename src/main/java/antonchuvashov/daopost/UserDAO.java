@@ -1,6 +1,7 @@
 package antonchuvashov.daopost;
 
 import antonchuvashov.model.User;
+import antonchuvashov.utils.PasswordUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class UserDAO {
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, user.getUsername());
-            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setString(2, user.getPasswordHash());
             preparedStatement.setString(3, user.getFullName());
             preparedStatement.setDate(4, new java.sql.Date(user.getBirthday().getTime()));
             preparedStatement.setBigDecimal(5, user.getSum());
@@ -73,7 +74,7 @@ public class UserDAO {
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement.setString(1, user.getPassword());
+            statement.setString(1, user.getPasswordHash());
             statement.setString(2, user.getFullName());
             statement.setDate(3, new java.sql.Date(user.getBirthday().getTime()));
             statement.setBigDecimal(4, user.getSum());
@@ -89,6 +90,18 @@ public class UserDAO {
 
             statement.setString(1, username);
             statement.executeUpdate();
+        }
+    }
+
+    public static void addRootUserIfDoesntExist() throws SQLException {
+        User user = get("root");
+        if (user == null || !PasswordUtils.checkPassword("root", user.getPasswordHash())) {
+            if (user != null) {
+                delete("root");
+            }
+            user = new User("root", PasswordUtils.hashPassword("root"),
+                    "root", Date.valueOf(LocalDate.now().minusYears(20)));
+            add(user);
         }
     }
 }
