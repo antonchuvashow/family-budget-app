@@ -1,31 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="FamilyBudget:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ab42291d-034f-472c-b140-930920feccbb" name="Changes" comment="add user managing and fix some bugs">
-      <change afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/utils/ChartGenerator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/utils/PDFReportGenerator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/utils/PasswordUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/utils/Statistics.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/antonchuvashov/familybudget/times_new_roman.ttf" afterDir="false" />
+    <list default="true" id="ab42291d-034f-472c-b140-930920feccbb" name="Changes" comment="add report generation and refactor a bit">
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/FamilyBudget_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/antonchuvashov/familybudget/icon.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/daopost/ExpenseCategoryDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/daopost/ExpenseCategoryDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/daopost/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/daopost/UserDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/AuthenticationState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/AuthenticationState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/CategoryEditorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/CategoryEditorController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/LoginApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/LoginApp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/MainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/UserEditorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/UserEditorController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/Expense.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/Expense.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/Income.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/Income.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/TransactionRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/TransactionRecord.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/antonchuvashov/familybudget/main_window.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/antonchuvashov/familybudget/main_window.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,6 +74,9 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Facets",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
     "run.code.analysis.last.selected.profile": "pProject Default",
     "settings.editor.selected.configurable": "Errors",
     "vue.rearranger.settings.migration": "true"
@@ -103,6 +96,7 @@
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/resources/antonchuvashov/familybudget" />
+      <recent name="$PROJECT_DIR$/src/main/resources/antonchuvashov/familybudget/images" />
       <recent name="$PROJECT_DIR$/src/main/resources" />
       <recent name="$PROJECT_DIR$/src/main/resources/antonchuvashov.daopost" />
       <recent name="$PROJECT_DIR$" />
@@ -174,7 +168,7 @@
       <workItem from="1732803507531" duration="14670000" />
       <workItem from="1733039132220" duration="2474000" />
       <workItem from="1733041617611" duration="4000" />
-      <workItem from="1733041632055" duration="4414000" />
+      <workItem from="1733041632055" duration="6510000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -248,7 +242,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732816589209</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="add report generation and refactor a bit">
+      <option name="closed" value="true" />
+      <created>1733046316867</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1733046316867</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -276,6 +278,7 @@
     <MESSAGE value="add CRUD form for transactions" />
     <MESSAGE value="fix CRUD operations and refreshment of table" />
     <MESSAGE value="add user managing and fix some bugs" />
-    <option name="LAST_COMMIT_MESSAGE" value="add user managing and fix some bugs" />
+    <MESSAGE value="add report generation and refactor a bit" />
+    <option name="LAST_COMMIT_MESSAGE" value="add report generation and refactor a bit" />
   </component>
 </project>

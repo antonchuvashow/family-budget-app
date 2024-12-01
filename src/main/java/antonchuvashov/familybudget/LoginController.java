@@ -54,6 +54,8 @@ public class LoginController {
                     FXMLLoader loader = new FXMLLoader(LoginApp.class.getResource("main_window.fxml"));
                     Parent root = loader.load();
                     Stage stage = new Stage();
+                    LoginApp.setIcon(stage);
+
                     stage.setScene(new Scene(root, 400, 400));
                     stage.setMinWidth(800);
                     stage.setMinHeight(400);
