@@ -9,13 +9,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ab42291d-034f-472c-b140-930920feccbb" name="Changes" comment="add report generation and refactor a bit">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/FamilyBudget_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/antonchuvashov/familybudget/icon.png" afterDir="false" />
+    <list default="true" id="ab42291d-034f-472c-b140-930920feccbb" name="Changes" comment="rename main class">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/LoginApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/LoginApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/antonchuvashov/familybudget/LoginController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,6 +57,7 @@
   "keyToString": {
     "Application.HelloApplication.executor": "Run",
     "Application.LoginApp.executor": "Run",
+    "Application.MainApp.executor": "Run",
     "Docker.docker-compose.yml: Compose Deployment.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
@@ -106,9 +102,9 @@
       <recent name="antonchuvashov.familybudget.LoginApp" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.LoginApp">
-    <configuration name="LoginApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="antonchuvashov.familybudget.LoginApp" />
+  <component name="RunManager" selected="Application.MainApp">
+    <configuration name="MainApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="antonchuvashov.familybudget.MainApp" />
       <module name="FamilyBudget" />
       <extension name="coverage">
         <pattern>
@@ -137,7 +133,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.LoginApp" />
+        <item itemvalue="Application.MainApp" />
         <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
       </list>
     </recent_temporary>
@@ -168,7 +164,8 @@
       <workItem from="1732803507531" duration="14670000" />
       <workItem from="1733039132220" duration="2474000" />
       <workItem from="1733041617611" duration="4000" />
-      <workItem from="1733041632055" duration="6510000" />
+      <workItem from="1733041632055" duration="7588000" />
+      <workItem from="1733892783490" duration="1518000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -250,7 +247,23 @@
       <option name="project" value="LOCAL" />
       <updated>1733046316867</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="add icon">
+      <option name="closed" value="true" />
+      <created>1733048430882</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1733048430882</updated>
+    </task>
+    <task id="LOCAL-00012" summary="rename main class">
+      <option name="closed" value="true" />
+      <created>1733048479918</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1733048479918</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -279,6 +292,8 @@
     <MESSAGE value="fix CRUD operations and refreshment of table" />
     <MESSAGE value="add user managing and fix some bugs" />
     <MESSAGE value="add report generation and refactor a bit" />
-    <option name="LAST_COMMIT_MESSAGE" value="add report generation and refactor a bit" />
+    <MESSAGE value="add icon" />
+    <MESSAGE value="rename main class" />
+    <option name="LAST_COMMIT_MESSAGE" value="rename main class" />
   </component>
 </project>
